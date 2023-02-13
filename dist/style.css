@@ -1,0 +1,40 @@
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  letter-spacing: 0.05em;
+}
+
+#header {
+  background-color: rgba(168, 168, 168, 0.8);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  position: fixed;
+  width: 100vw;
+  z-index: 999;
+  height: 30px;
+}
+
+#footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  background-color: rgba(168, 168, 168, 0.4);
+  margin: 0;
+}
+
+#content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 50px;
+  gap: 20px;
+  flex-grow: 1;
+  height: calc(100% - 50px);
+  overflow: scroll;
+}
