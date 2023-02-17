@@ -29,12 +29,27 @@ body {
 
 #content {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
   padding-top: 50px;
   gap: 20px;
   flex-grow: 1;
-  height: calc(100% - 50px);
+  height: calc(100% - 100px);
   overflow: scroll;
+}
+
+#ToDoListDiv {
+  display: flex;
+}
+
+.toDoItem {
+  border: 1px solid black;
+  align-self: flex-start;
+  padding: 10px;
+  width: 600px;
+  cursor: pointer;
+}
+
+#sideBar {
+  background-color: rgb(98, 98, 98);
+  width: 200px;
+  height: 100%;
 }

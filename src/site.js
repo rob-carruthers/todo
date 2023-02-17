@@ -1,30 +1,27 @@
 import { ToDoList, ToDo } from "./todo";
+import { header, footer, sideBar, renderToDoList } from "./render";
 import "iconify-icon";
 
-function header() {
-  const headerDiv = document.createElement("div");
-  headerDiv.id = "header";
 
-  const logo = document.createElement("div");
-  logo.classList.add("logo");
-  logo.textContent = "Go Do";
-  headerDiv.appendChild(logo);
+const testTodo = new ToDo();
+testTodo.title = "Test";
+testTodo.description = "A test task.";
+testTodo.dueDate = undefined; // implement date handling later
+testTodo.priority = 0;
+testTodo.completed = false;
 
-  return headerDiv;
-}
-
-function footer() {
-  const footerDiv = document.createElement("div");
-  footerDiv.id = "footer";
-  footerDiv.innerHTML =
-    '<div>© Rob Carruthers 2023 <a href="https://github.com/rob-carruthers/todo" target="_blank"><iconify-icon icon="mdi:github" style="color: black;"></iconify-icon></a></div>';
-
-  return footerDiv;
-}
+const testTodoList = new ToDoList("Test List");
+testTodoList.add(testTodo);
 
 const contentDiv = document.createElement("div");
 contentDiv.id = "content";
 
+const ToDoListDiv = document.createElement("div");
+ToDoListDiv.id = "ToDoListDiv";
+
 document.body.appendChild(header());
-contentDiv.appendChild(footer());
+contentDiv.appendChild(sideBar());
+contentDiv.appendChild(ToDoListDiv);
+renderToDoList(ToDoListDiv, testTodoList);
 document.body.appendChild(contentDiv);
+document.body.appendChild(footer());
