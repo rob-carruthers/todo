@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 function header() {
   const headerDiv = document.createElement("div");
   headerDiv.id = "header";
@@ -29,9 +31,7 @@ function sideBar() {
 
 function ToDoClickOpenClose(e) {
   const target = e.target.closest(".toDoItem");
-  console.log(target.classList)
   if (target.classList.contains("closed")) {
-    console.log("opening toDo");
     target.classList.remove("closed");
     target.classList.add("open");
     for (const child of target.children) {
@@ -41,7 +41,6 @@ function ToDoClickOpenClose(e) {
     }
   }
   else {
-    console.log("closing toDo");
     target.classList.remove("open");
     target.classList.add("closed");
     for (const child of target.children) {
@@ -68,8 +67,13 @@ function renderToDoList(ToDoListDiv, ToDoListInstance) {
     descriptionDiv.style.display = "none";
     descriptionDiv.textContent = todo.description;
 
+    const dueDateDiv = document.createElement("div");
+    dueDateDiv.style.display = "none";
+    dueDateDiv.textContent = "Due: " + format(todo.dueDate, "yyyy/MM/dd HH:mm");
+
     toDoDiv.appendChild(titleDiv);
     toDoDiv.appendChild(descriptionDiv);
+    toDoDiv.appendChild(dueDateDiv);
 
     toDoDiv.addEventListener("click", ToDoClickOpenClose);
 

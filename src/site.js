@@ -6,7 +6,7 @@ import "iconify-icon";
 const testTodo = new ToDo();
 testTodo.title = "Test";
 testTodo.description = "A test task.";
-testTodo.dueDate = undefined; // implement date handling later
+testTodo.dueDate = new Date(2023, 5, 1, 0, 0);
 testTodo.priority = 0;
 testTodo.completed = false;
 
