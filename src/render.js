@@ -85,8 +85,9 @@ function clickToEdit(e) {
 }
 
 function renderToDoList(ToDoListDiv, ToDoListInstance) {
-  ToDoListInstance.list.forEach((todo) => {
+  for (const [i, todo] of ToDoListInstance.list.entries()) {
     const toDoDiv = document.createElement("div");
+    toDoDiv.id = i;
     toDoDiv.classList.add("toDoItem");
     toDoDiv.classList.add("closed");
 
@@ -115,7 +116,7 @@ function renderToDoList(ToDoListDiv, ToDoListInstance) {
     }
 
     ToDoListDiv.appendChild(toDoDiv);
-  });
+  };
 }
 
 export { header, footer, sideBar, renderToDoList };
