@@ -43,8 +43,20 @@ class ToDoHandler {
     }
   }
 
-  clickToEdit(e, toDoList) {
-    console.log(toDoList);
+  amendField(e, toDoItem) {
+    const buttonDiv = e.target.closest("div");
+    const field = buttonDiv.id.slice(3);
+    const fieldDiv = buttonDiv.closest("#" + field);
+    const inputValue = fieldDiv.children[0].children[0].value;
+
+    fieldDiv.innerHTML = "";
+    fieldDiv.textContent = inputValue;
+
+    toDoItem[field] = inputValue;
+  }
+
+  clickToEdit(e, toDoItem) {
+    console.log(toDoItem);
     const yesButton = document.createElement("div");
     yesButton.id = "yes" + e.target.id;
     yesButton.innerHTML =
@@ -63,14 +75,7 @@ class ToDoHandler {
     inputField.innerHTML =
       "<input id='input' type='text' value='" + prefill + "'>";
 
-    yesButton.addEventListener("click", (e) => {
-      const buttonDiv = e.target.closest("div");
-      const fieldDiv = buttonDiv.closest("#" + buttonDiv.id.slice(3));
-      const inputValue = fieldDiv.children[0].children[0].value;
-
-      fieldDiv.innerHTML = "";
-      fieldDiv.textContent = inputValue;
-    });
+    yesButton.addEventListener("click", (e) => this.amendField(e, toDoItem));
 
     e.target.appendChild(inputField);
     e.target.appendChild(yesButton);
