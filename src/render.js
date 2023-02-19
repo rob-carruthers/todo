@@ -26,30 +26,62 @@ function sideBar() {
 
   sideBarDiv.id = "sideBar";
 
-  return sideBarDiv
+  return sideBarDiv;
 }
 
 function ToDoClickOpenClose(e) {
-  const target = e.target.closest(".toDoItem");
-  if (target.classList.contains("closed")) {
-    target.classList.remove("closed");
-    target.classList.add("open");
-    for (const child of target.children) {
-      if (child.id != "title") {
-      child.style.display = "block";
+  if (e.target.classList.contains("toDoItem")) {
+    if (e.target.classList.contains("closed")) {
+      e.target.classList.remove("closed");
+      e.target.classList.add("open");
+      for (const child of e.target.children) {
+        if (child.id != "title") {
+          child.style.display = "block";
+        }
+      }
+    } else {
+      e.target.classList.remove("open");
+      e.target.classList.add("closed");
+      for (const child of e.target.children) {
+        if (child.id != "title") {
+          child.style.display = "none";
+        }
       }
     }
   }
-  else {
-    target.classList.remove("open");
-    target.classList.add("closed");
-    for (const child of target.children) {
-      if (child.id != "title") {
-        child.style.display = "none";
-        }
-    }
-  }
+}
 
+function clickToEdit(e) {
+  const yesButton = document.createElement("div");
+  yesButton.id = "yes" + e.target.id;
+  yesButton.innerHTML =
+    '<iconify-icon icon="mdi:check" style="color: black;"></iconify-icon>';
+
+  const noButton = document.createElement("div");
+  noButton.innerHTML =
+    '<iconify-icon icon="mdi:close-thick" style="color: black;"></iconify-icon>';
+
+  const prefill = e.target.textContent;
+
+  e.target.innerHTML = "";
+  e.target.style.display = "flex";
+
+  const inputField = document.createElement("div");
+  inputField.innerHTML =
+    "<input id='input' type='text' value='" + prefill + "'>";
+
+  yesButton.addEventListener("click", (e) => {
+    const buttonDiv = e.target.closest("div");
+    const fieldDiv = buttonDiv.closest("#" + buttonDiv.id.slice(3));
+    const inputValue = fieldDiv.children[0].children[0].value;
+
+    fieldDiv.innerHTML = "";
+    fieldDiv.textContent = inputValue;
+  });
+
+  e.target.appendChild(inputField);
+  e.target.appendChild(yesButton);
+  e.target.appendChild(noButton);
 }
 
 function renderToDoList(ToDoListDiv, ToDoListInstance) {
@@ -64,10 +96,12 @@ function renderToDoList(ToDoListDiv, ToDoListInstance) {
     titleDiv.style.fontWeight = "bold";
 
     const descriptionDiv = document.createElement("div");
+    descriptionDiv.id = "description";
     descriptionDiv.style.display = "none";
     descriptionDiv.textContent = todo.description;
 
     const dueDateDiv = document.createElement("div");
+    dueDateDiv.id = "dueDate";
     dueDateDiv.style.display = "none";
     dueDateDiv.textContent = "Due: " + format(todo.dueDate, "yyyy/MM/dd HH:mm");
 
@@ -76,10 +110,12 @@ function renderToDoList(ToDoListDiv, ToDoListInstance) {
     toDoDiv.appendChild(dueDateDiv);
 
     toDoDiv.addEventListener("click", ToDoClickOpenClose);
+    for (const child of toDoDiv.children) {
+      child.addEventListener("click", clickToEdit);
+    }
 
     ToDoListDiv.appendChild(toDoDiv);
-  })
+  });
 }
-
 
 export { header, footer, sideBar, renderToDoList };

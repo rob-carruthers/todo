@@ -41,11 +41,17 @@ body {
 }
 
 .toDoItem {
+  display: flex;
+  flex-direction: column;
   border: 1px solid black;
   align-self: flex-start;
   padding: 10px;
   width: 600px;
   cursor: pointer;
+}
+
+.toDoItem > div {
+  max-width: fit-content;
 }
 
 #sideBar {
