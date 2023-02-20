@@ -21,20 +21,20 @@ class ToDoHandler {
     this._toDoLists.push(toDoList);
   }
 
-  ToDoClickOpenClose(e) {
-    if (e.target.classList.contains("toDoItem")) {
-      if (e.target.classList.contains("closed")) {
-        e.target.classList.remove("closed");
-        e.target.classList.add("open");
-        for (const child of e.target.children) {
+  ToDoClickOpenClose(target) {
+    if (target.classList.contains("toDoItem")) {
+      if (target.classList.contains("closed")) {
+        target.classList.remove("closed");
+        target.classList.add("open");
+        for (const child of target.children) {
           if (child.id != "title") {
             child.style.display = "block";
           }
         }
       } else {
-        e.target.classList.remove("open");
-        e.target.classList.add("closed");
-        for (const child of e.target.children) {
+        target.classList.remove("open");
+        target.classList.add("closed");
+        for (const child of target.children) {
           if (child.id != "title") {
             child.style.display = "none";
           }
@@ -43,8 +43,8 @@ class ToDoHandler {
     }
   }
 
-  amendField(e, toDoItem) {
-    const buttonDiv = e.target.closest("div");
+  amendField(target, toDoItem) {
+    const buttonDiv = target.closest("div");
     const field = buttonDiv.id.slice(3);
     const fieldDiv = buttonDiv.closest("#" + field);
     const inputValue = fieldDiv.children[0].children[0].value;
@@ -55,10 +55,10 @@ class ToDoHandler {
     toDoItem[field] = inputValue;
   }
 
-  clickToEdit(e, toDoItem) {
+  clickToEdit(target, toDoItem) {
     console.log(toDoItem);
     const yesButton = document.createElement("div");
-    yesButton.id = "yes" + e.target.id;
+    yesButton.id = "yes" + target.id;
     yesButton.innerHTML =
       '<iconify-icon icon="mdi:check" style="color: black;"></iconify-icon>';
 
@@ -66,20 +66,20 @@ class ToDoHandler {
     noButton.innerHTML =
       '<iconify-icon icon="mdi:close-thick" style="color: black;"></iconify-icon>';
 
-    const prefill = e.target.textContent;
+    const prefill = target.textContent;
 
-    e.target.innerHTML = "";
-    e.target.style.display = "flex";
+    target.innerHTML = "";
+    target.style.display = "flex";
 
     const inputField = document.createElement("div");
     inputField.innerHTML =
       "<input id='input' type='text' value='" + prefill + "'>";
 
-    yesButton.addEventListener("click", (e) => this.amendField(e, toDoItem));
+    yesButton.addEventListener("click", (e) => this.amendField(e.target, toDoItem));
 
-    e.target.appendChild(inputField);
-    e.target.appendChild(yesButton);
-    e.target.appendChild(noButton);
+    target.appendChild(inputField);
+    target.appendChild(yesButton);
+    target.appendChild(noButton);
   }
 
   render(ToDoListDiv) {
@@ -110,9 +110,9 @@ class ToDoHandler {
       toDoDiv.appendChild(descriptionDiv);
       toDoDiv.appendChild(dueDateDiv);
 
-      toDoDiv.addEventListener("click", this.ToDoClickOpenClose);
+      toDoDiv.addEventListener("click", (e) => this.ToDoClickOpenClose(e.target));
       for (const child of toDoDiv.children) {
-        child.addEventListener("click", (e) => this.clickToEdit(e, todo));
+        child.addEventListener("click", (e) => this.clickToEdit(e.target, todo));
       }
 
       ToDoListDiv.appendChild(toDoDiv);
