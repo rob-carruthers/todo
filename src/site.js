@@ -1,7 +1,7 @@
 import { ToDoList, ToDo } from "./todo";
 import { header, footer, sideBar, renderToDoList } from "./render";
 import "iconify-icon";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 
 class ToDoHandler {
   constructor() {
@@ -47,16 +47,21 @@ class ToDoHandler {
     const buttonDiv = target.closest("div");
     const field = buttonDiv.id.slice(3);
     const fieldDiv = buttonDiv.closest("#" + field);
-    const inputValue = fieldDiv.children[0].children[0].value;
+    let inputValue = fieldDiv.children[0].children[0].value;
 
+    if (field === "dueDate") {
+      const newDueDate = parse(inputValue, "yyyy-MM-dd\'T\'HH:mm", new Date())
+      toDoItem.dueDate = newDueDate;
+      inputValue = "Due: " + format(newDueDate, "yyyy/MM/dd HH:mm");
+      
+    } else {
+      toDoItem[field] = inputValue;    
+    }
     fieldDiv.innerHTML = "";
     fieldDiv.textContent = inputValue;
-
-    toDoItem[field] = inputValue;
   }
 
   clickToEdit(target, toDoItem) {
-    console.log(toDoItem);
     const yesButton = document.createElement("div");
     yesButton.id = "yes" + target.id;
     yesButton.innerHTML =
@@ -66,16 +71,24 @@ class ToDoHandler {
     noButton.innerHTML =
       '<iconify-icon icon="mdi:close-thick" style="color: black;"></iconify-icon>';
 
-    const prefill = target.textContent;
-
+    let prefill = target.textContent;
     target.innerHTML = "";
     target.style.display = "flex";
 
     const inputField = document.createElement("div");
-    inputField.innerHTML =
-      "<input id='input' type='text' value='" + prefill + "'>";
 
-    yesButton.addEventListener("click", (e) => this.amendField(e.target, toDoItem));
+    if (target.id === "dueDate") {
+      prefill = format(toDoItem.dueDate, "yyyy-MM-dd HH:MM");
+      inputField.innerHTML =
+        "<input id='input' type='datetime-local' value='" + prefill + "'>";
+    } else {
+      inputField.innerHTML =
+        "<input id='input' type='text' value='" + prefill + "'>";
+    }
+
+    yesButton.addEventListener("click", (e) =>
+      this.amendField(e.target, toDoItem)
+    );
 
     target.appendChild(inputField);
     target.appendChild(yesButton);
@@ -110,9 +123,13 @@ class ToDoHandler {
       toDoDiv.appendChild(descriptionDiv);
       toDoDiv.appendChild(dueDateDiv);
 
-      toDoDiv.addEventListener("click", (e) => this.ToDoClickOpenClose(e.target));
+      toDoDiv.addEventListener("click", (e) =>
+        this.ToDoClickOpenClose(e.target)
+      );
       for (const child of toDoDiv.children) {
-        child.addEventListener("click", (e) => this.clickToEdit(e.target, todo));
+        child.addEventListener("click", (e) =>
+          this.clickToEdit(e.target, todo)
+        );
       }
 
       ToDoListDiv.appendChild(toDoDiv);
