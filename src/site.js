@@ -34,10 +34,6 @@ class ToDoHandler {
 
   amendField(target, toDoItem) {
     let amendedItem = renderAmendField(target);
-    let parentElement = document.querySelector(
-      ".editing, #" + amendedItem.field
-    );
-    parentElement.classList.remove("editing");
     toDoItem[amendedItem.field] = amendedItem.newValue;
   }
 
@@ -67,9 +63,11 @@ class ToDoHandler {
         this.toDoClickOpenClose(e.target)
       );
       for (const child of toDoDiv.children) {
-        child.addEventListener("click", (e) =>
-          this.clickToEdit(e.target, todo)
-        );
+        if (child.id != "priority") {
+          child.addEventListener("click", (e) =>
+            this.clickToEdit(e.target, todo)
+          );
+        }
       }
 
       toDoListDiv.appendChild(toDoDiv);

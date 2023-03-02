@@ -71,7 +71,7 @@ function renderAmendField(target) {
 
 function renderClickToEdit(target) {
   let field = target.closest(".editableField");
-  if (field != null && field.id != "priority") {
+  if (field != null) {
     field.classList.add("editing");
     const yesButton = document.createElement("div");
     yesButton.id = "yes" + target.id;
