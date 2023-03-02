@@ -36,7 +36,17 @@ body {
   overflow: scroll;
 }
 
+#addNewToDoItem {
+  background-color: lightgreen;
+  border: 2px solid gray;
+  border-radius: 4px;
+  cursor: pointer;
+  align-self: baseline;
+  padding: 5px;
+}
+
 #ToDoListDiv {
+  padding-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;

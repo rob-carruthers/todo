@@ -9,6 +9,7 @@ import {
   renderToDoItem,
 } from "./render";
 import "iconify-icon";
+import { add } from "date-fns";
 
 class ToDoHandler {
   constructor() {
@@ -55,9 +56,53 @@ class ToDoHandler {
 
     toDoItem.priority = target.id;
     target.classList.add("activated");
+    console.log(this._toDoLists[this._currentToDoList]);
+  }
+
+  setToDoEventHandlers(toDoDiv, todo) {
+    toDoDiv.addEventListener("click", (e) => this.toDoClickOpenClose(e.target));
+    for (const child of toDoDiv.children) {
+      if (child.id != "priority") {
+        child.addEventListener("click", (e) =>
+          this.clickToEdit(e.target, todo)
+        );
+      } else {
+        child.addEventListener("click", (e) =>
+          this.changePriority(e.target, todo)
+        );
+      }
+    }
+  }
+
+  addToDoItem(toDoListDiv) {
+    const newToDoItem = new ToDo();
+    newToDoItem.title = "New todo";
+    newToDoItem.description = "Description";
+    newToDoItem.dueDate = add(new Date(), { days: 1 });
+    newToDoItem.priority = 0;
+    this._toDoLists[this._currentToDoList].add(newToDoItem);
+
+    const toDoDiv = renderToDoItem(
+      newToDoItem.title,
+      newToDoItem.description,
+      newToDoItem.dueDate,
+      newToDoItem.priority
+    );
+    this.setToDoEventHandlers(toDoDiv, newToDoItem);
+
+    toDoListDiv.appendChild(toDoDiv);
   }
 
   render(toDoListDiv) {
+    const addNewToDoItemButton = document.createElement("div");
+    addNewToDoItemButton.id = "addNewToDoItem";
+    addNewToDoItemButton.textContent = "New todo";
+
+    addNewToDoItemButton.addEventListener("click", (e) =>
+      this.addToDoItem(toDoListDiv)
+    );
+
+    toDoListDiv.appendChild(addNewToDoItemButton);
     const toDoList = this._toDoLists[this._currentToDoList];
     for (const [i, todo] of toDoList.list.entries()) {
       const toDoDiv = renderToDoItem(
@@ -68,20 +113,7 @@ class ToDoHandler {
       );
       toDoDiv.id = i;
 
-      toDoDiv.addEventListener("click", (e) =>
-        this.toDoClickOpenClose(e.target)
-      );
-      for (const child of toDoDiv.children) {
-        if (child.id != "priority") {
-          child.addEventListener("click", (e) =>
-            this.clickToEdit(e.target, todo)
-          );
-        } else {
-          child.addEventListener("click", (e) =>
-            this.changePriority(e.target, todo)
-          );
-        }
-      }
+      this.setToDoEventHandlers(toDoDiv, todo);
 
       toDoListDiv.appendChild(toDoDiv);
     }
