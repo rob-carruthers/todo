@@ -151,6 +151,7 @@ function renderToDoItem(title, description, dueDate, priority) {
   ].entries()) {
     const priorityIndicator = document.createElement("div");
     priorityIndicator.textContent = priorityName;
+    priorityIndicator.id = priorityIndex;
     priorityIndicator.classList.add("priorityIndicator");
     if (priority == priorityIndex) {
       priorityIndicator.classList.add("activated");

@@ -48,6 +48,15 @@ class ToDoHandler {
     }
   }
 
+  changePriority(target, toDoItem) {
+    for (let element of Array.from(target.parentElement.children)) {
+      element.classList.remove("activated");
+    }
+
+    toDoItem.priority = target.id;
+    target.classList.add("activated");
+  }
+
   render(toDoListDiv) {
     const toDoList = this._toDoLists[this._currentToDoList];
     for (const [i, todo] of toDoList.list.entries()) {
@@ -66,6 +75,10 @@ class ToDoHandler {
         if (child.id != "priority") {
           child.addEventListener("click", (e) =>
             this.clickToEdit(e.target, todo)
+          );
+        } else {
+          child.addEventListener("click", (e) =>
+            this.changePriority(e.target, todo)
           );
         }
       }
