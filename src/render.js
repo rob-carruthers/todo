@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 
 function header() {
   const headerDiv = document.createElement("div");
@@ -23,26 +23,24 @@ function footer() {
 
 function sideBar() {
   const sideBarDiv = document.createElement("div");
-
   sideBarDiv.id = "sideBar";
-
   return sideBarDiv;
 }
 
-function ToDoClickOpenClose(e) {
-  if (e.target.classList.contains("toDoItem")) {
-    if (e.target.classList.contains("closed")) {
-      e.target.classList.remove("closed");
-      e.target.classList.add("open");
-      for (const child of e.target.children) {
+function renderClickOpenClose(target) {
+  if (target.classList.contains("toDoItem")) {
+    if (target.classList.contains("closed")) {
+      target.classList.remove("closed");
+      target.classList.add("open");
+      for (const child of target.children) {
         if (child.id != "title") {
           child.style.display = "block";
         }
       }
     } else {
-      e.target.classList.remove("open");
-      e.target.classList.add("closed");
-      for (const child of e.target.children) {
+      target.classList.remove("open");
+      target.classList.add("closed");
+      for (const child of target.children) {
         if (child.id != "title") {
           child.style.display = "none";
         }
@@ -51,9 +49,28 @@ function ToDoClickOpenClose(e) {
   }
 }
 
-function clickToEdit(e) {
+function renderAmendField(target) {
+  let newValue = undefined;
+  const buttonDiv = target.closest("div");
+  const field = buttonDiv.id.slice(3);
+  const fieldDiv = buttonDiv.closest("#" + field);
+  let renderValue = fieldDiv.children[0].children[0].value;
+
+  if (field === "dueDate") {
+    newValue = parse(renderValue, "yyyy-MM-dd'T'HH:mm", new Date());
+    renderValue = "Due: " + format(newValue, "yyyy/MM/dd HH:mm");
+  } else {
+    newValue = renderValue;
+  }
+  fieldDiv.innerHTML = "";
+  fieldDiv.textContent = renderValue;
+
+  return { field: field, newValue: newValue };
+}
+
+function renderClickToEdit(target) {
   const yesButton = document.createElement("div");
-  yesButton.id = "yes" + e.target.id;
+  yesButton.id = "yes" + target.id;
   yesButton.innerHTML =
     '<iconify-icon icon="mdi:check" style="color: black;"></iconify-icon>';
 
@@ -61,62 +78,62 @@ function clickToEdit(e) {
   noButton.innerHTML =
     '<iconify-icon icon="mdi:close-thick" style="color: black;"></iconify-icon>';
 
-  const prefill = e.target.textContent;
-
-  e.target.innerHTML = "";
-  e.target.style.display = "flex";
+  const prefill = target.textContent;
+  target.innerHTML = "";
+  target.style.display = "flex";
 
   const inputField = document.createElement("div");
-  inputField.innerHTML =
-    "<input id='input' type='text' value='" + prefill + "'>";
 
-  yesButton.addEventListener("click", (e) => {
-    const buttonDiv = e.target.closest("div");
-    const fieldDiv = buttonDiv.closest("#" + buttonDiv.id.slice(3));
-    const inputValue = fieldDiv.children[0].children[0].value;
+  if (target.id === "dueDate") {
+    inputField.innerHTML =
+      "<input id='input' type='datetime-local' value='" +
+      prefill.slice(5).replace(/\s+/g, "T").replace(/\//g, "-") +
+      "'>";
+  } else {
+    inputField.innerHTML =
+      "<input id='input' type='text' value='" + prefill + "'>";
+  }
 
-    fieldDiv.innerHTML = "";
-    fieldDiv.textContent = inputValue;
-  });
+  target.appendChild(inputField);
+  target.appendChild(yesButton);
+  target.appendChild(noButton);
 
-  e.target.appendChild(inputField);
-  e.target.appendChild(yesButton);
-  e.target.appendChild(noButton);
+  return yesButton;
 }
 
-function renderToDoList(ToDoListDiv, ToDoListInstance) {
-  for (const [i, todo] of ToDoListInstance.list.entries()) {
-    const toDoDiv = document.createElement("div");
-    toDoDiv.id = i;
-    toDoDiv.classList.add("toDoItem");
-    toDoDiv.classList.add("closed");
+function renderToDoItem(title, description, dueDate) {
+  const toDoDiv = document.createElement("div");
+  toDoDiv.classList.add("toDoItem");
+  toDoDiv.classList.add("closed");
 
-    const titleDiv = document.createElement("div");
-    titleDiv.id = "title";
-    titleDiv.textContent = todo.title;
-    titleDiv.style.fontWeight = "bold";
+  const titleDiv = document.createElement("div");
+  titleDiv.id = "title";
+  titleDiv.textContent = title;
+  titleDiv.style.fontWeight = "bold";
 
-    const descriptionDiv = document.createElement("div");
-    descriptionDiv.id = "description";
-    descriptionDiv.style.display = "none";
-    descriptionDiv.textContent = todo.description;
+  const descriptionDiv = document.createElement("div");
+  descriptionDiv.id = "description";
+  descriptionDiv.style.display = "none";
+  descriptionDiv.textContent = description;
 
-    const dueDateDiv = document.createElement("div");
-    dueDateDiv.id = "dueDate";
-    dueDateDiv.style.display = "none";
-    dueDateDiv.textContent = "Due: " + format(todo.dueDate, "yyyy/MM/dd HH:mm");
+  const dueDateDiv = document.createElement("div");
+  dueDateDiv.id = "dueDate";
+  dueDateDiv.style.display = "none";
+  dueDateDiv.textContent = "Due: " + format(dueDate, "yyyy/MM/dd HH:mm");
 
-    toDoDiv.appendChild(titleDiv);
-    toDoDiv.appendChild(descriptionDiv);
-    toDoDiv.appendChild(dueDateDiv);
+  toDoDiv.appendChild(titleDiv);
+  toDoDiv.appendChild(descriptionDiv);
+  toDoDiv.appendChild(dueDateDiv);
 
-    toDoDiv.addEventListener("click", ToDoClickOpenClose);
-    for (const child of toDoDiv.children) {
-      child.addEventListener("click", clickToEdit);
-    }
-
-    ToDoListDiv.appendChild(toDoDiv);
-  };
+  return toDoDiv;
 }
 
-export { header, footer, sideBar, renderToDoList };
+export {
+  header,
+  footer,
+  sideBar,
+  renderToDoItem,
+  renderClickToEdit,
+  renderClickOpenClose,
+  renderAmendField,
+};

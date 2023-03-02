@@ -1,7 +1,14 @@
 import { ToDoList, ToDo } from "./todo";
-import { header, footer, sideBar, renderToDoList } from "./render";
+import {
+  header,
+  footer,
+  sideBar,
+  renderClickOpenClose,
+  renderClickToEdit,
+  renderAmendField,
+  renderToDoItem,
+} from "./render";
 import "iconify-icon";
-import { format, parse } from "date-fns";
 
 class ToDoHandler {
   constructor() {
@@ -22,106 +29,31 @@ class ToDoHandler {
   }
 
   ToDoClickOpenClose(target) {
-    if (target.classList.contains("toDoItem")) {
-      if (target.classList.contains("closed")) {
-        target.classList.remove("closed");
-        target.classList.add("open");
-        for (const child of target.children) {
-          if (child.id != "title") {
-            child.style.display = "block";
-          }
-        }
-      } else {
-        target.classList.remove("open");
-        target.classList.add("closed");
-        for (const child of target.children) {
-          if (child.id != "title") {
-            child.style.display = "none";
-          }
-        }
-      }
-    }
+    renderClickOpenClose(target);
   }
 
   amendField(target, toDoItem) {
-    const buttonDiv = target.closest("div");
-    const field = buttonDiv.id.slice(3);
-    const fieldDiv = buttonDiv.closest("#" + field);
-    let inputValue = fieldDiv.children[0].children[0].value;
-
-    if (field === "dueDate") {
-      const newDueDate = parse(inputValue, "yyyy-MM-dd\'T\'HH:mm", new Date())
-      toDoItem.dueDate = newDueDate;
-      inputValue = "Due: " + format(newDueDate, "yyyy/MM/dd HH:mm");
-      
-    } else {
-      toDoItem[field] = inputValue;    
-    }
-    fieldDiv.innerHTML = "";
-    fieldDiv.textContent = inputValue;
+    let amendedItem = renderAmendField(target);
+    toDoItem[amendedItem.field] = amendedItem.newValue;
   }
 
   clickToEdit(target, toDoItem) {
-    const yesButton = document.createElement("div");
-    yesButton.id = "yes" + target.id;
-    yesButton.innerHTML =
-      '<iconify-icon icon="mdi:check" style="color: black;"></iconify-icon>';
-
-    const noButton = document.createElement("div");
-    noButton.innerHTML =
-      '<iconify-icon icon="mdi:close-thick" style="color: black;"></iconify-icon>';
-
-    let prefill = target.textContent;
-    target.innerHTML = "";
-    target.style.display = "flex";
-
-    const inputField = document.createElement("div");
-
-    if (target.id === "dueDate") {
-      prefill = format(toDoItem.dueDate, "yyyy-MM-dd HH:MM");
-      inputField.innerHTML =
-        "<input id='input' type='datetime-local' value='" + prefill + "'>";
-    } else {
-      inputField.innerHTML =
-        "<input id='input' type='text' value='" + prefill + "'>";
-    }
+    const yesButton = renderClickToEdit(target);
 
     yesButton.addEventListener("click", (e) =>
       this.amendField(e.target, toDoItem)
     );
-
-    target.appendChild(inputField);
-    target.appendChild(yesButton);
-    target.appendChild(noButton);
   }
 
   render(ToDoListDiv) {
     const toDoList = this._toDoLists[this._currentToDoList];
     for (const [i, todo] of toDoList.list.entries()) {
-      const toDoDiv = document.createElement("div");
+      const toDoDiv = renderToDoItem(
+        todo.title,
+        todo.description,
+        todo.dueDate
+      );
       toDoDiv.id = i;
-      toDoDiv.classList.add("toDoItem");
-      toDoDiv.classList.add("closed");
-
-      const titleDiv = document.createElement("div");
-      titleDiv.id = "title";
-      titleDiv.textContent = todo.title;
-      titleDiv.style.fontWeight = "bold";
-
-      const descriptionDiv = document.createElement("div");
-      descriptionDiv.id = "description";
-      descriptionDiv.style.display = "none";
-      descriptionDiv.textContent = todo.description;
-
-      const dueDateDiv = document.createElement("div");
-      dueDateDiv.id = "dueDate";
-      dueDateDiv.style.display = "none";
-      dueDateDiv.textContent =
-        "Due: " + format(todo.dueDate, "yyyy/MM/dd HH:mm");
-
-      toDoDiv.appendChild(titleDiv);
-      toDoDiv.appendChild(descriptionDiv);
-      toDoDiv.appendChild(dueDateDiv);
 
       toDoDiv.addEventListener("click", (e) =>
         this.ToDoClickOpenClose(e.target)
