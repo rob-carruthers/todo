@@ -55,7 +55,6 @@ function renderAmendField(target) {
   const field = buttonDiv.id.slice(3);
   const fieldDiv = buttonDiv.closest("#" + field);
   let renderValue = fieldDiv.children[0].children[0].value;
-  console.log(renderValue);
 
   if (field === "dueDate") {
     newValue = parse(renderValue, "yyyy-MM-dd'T'HH:mm", new Date());
@@ -70,8 +69,9 @@ function renderAmendField(target) {
 }
 
 function renderClickToEdit(target) {
-  const field = target.closest(".editableField").id;
-  if (field != "priority") {
+  let field = target.closest(".editableField");
+  if (field != null && field.id != "priority") {
+    field.classList.add("editing");
     const yesButton = document.createElement("div");
     yesButton.id = "yes" + target.id;
     yesButton.innerHTML =
@@ -86,6 +86,7 @@ function renderClickToEdit(target) {
     target.style.display = "flex";
 
     const inputField = document.createElement("div");
+    inputField.id = "input";
 
     if (target.id === "dueDate") {
       inputField.innerHTML =
@@ -96,6 +97,12 @@ function renderClickToEdit(target) {
       inputField.innerHTML =
         "<input id='input' type='text' value='" + prefill + "'>";
     }
+
+    noButton.addEventListener("click", (e) => {
+      //const targetDiv = e.target.closest(".editableField");
+      //const input = e.target.closest("#input");
+      console.log({ targetDiv, input });
+    });
 
     target.appendChild(inputField);
     target.appendChild(yesButton);
@@ -132,12 +139,16 @@ function renderToDoItem(title, description, dueDate, priority) {
   priorityDiv.id = "priority";
   priorityDiv.classList.add("editableField");
   priorityDiv.style.display = "none";
-  for ( let [priorityIndex, priorityName] of ["High", "Medium", "Low"].entries()) {
+  for (let [priorityIndex, priorityName] of [
+    "High",
+    "Medium",
+    "Low",
+  ].entries()) {
     const priorityIndicator = document.createElement("div");
     priorityIndicator.textContent = priorityName;
     priorityIndicator.classList.add("priorityIndicator");
-    if ( priority == priorityIndex ) {
-      priorityIndicator.classList.add("activated")
+    if (priority == priorityIndex) {
+      priorityIndicator.classList.add("activated");
     }
     priorityDiv.appendChild(priorityIndicator);
   }

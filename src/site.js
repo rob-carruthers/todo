@@ -34,16 +34,22 @@ class ToDoHandler {
 
   amendField(target, toDoItem) {
     let amendedItem = renderAmendField(target);
-    console.log(amendedItem);
+    let parentElement = document.querySelector(
+      ".editing, #" + amendedItem.field
+    );
+    parentElement.classList.remove("editing");
     toDoItem[amendedItem.field] = amendedItem.newValue;
   }
 
   clickToEdit(target, toDoItem) {
-    const yesButton = renderClickToEdit(target);
+    const field = target.closest(".editableField");
+    if (field != null && !field.classList.contains("editing")) {
+      const yesButton = renderClickToEdit(target);
 
-    yesButton.addEventListener("click", (e) => 
-      this.amendField(e.target, toDoItem)
-    );
+      yesButton.addEventListener("click", (e) =>
+        this.amendField(e.target, toDoItem)
+      );
+    }
   }
 
   render(toDoListDiv) {
@@ -61,9 +67,10 @@ class ToDoHandler {
         this.toDoClickOpenClose(e.target)
       );
       for (const child of toDoDiv.children) {
-        child.addEventListener("click", (e) => 
-            this.clickToEdit(e.target, todo));
-      };
+        child.addEventListener("click", (e) =>
+          this.clickToEdit(e.target, todo)
+        );
+      }
 
       toDoListDiv.appendChild(toDoDiv);
     }
