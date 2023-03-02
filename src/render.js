@@ -64,6 +64,7 @@ function renderAmendField(target) {
   }
   fieldDiv.innerHTML = "";
   fieldDiv.textContent = renderValue;
+  fieldDiv.classList.remove("editing");
 
   return { field: field, newValue: newValue };
 }
@@ -78,10 +79,12 @@ function renderClickToEdit(target) {
       '<iconify-icon icon="mdi:check" style="color: black;"></iconify-icon>';
 
     const noButton = document.createElement("div");
+    noButton.id = "noButton";
     noButton.innerHTML =
       '<iconify-icon icon="mdi:close-thick" style="color: black;"></iconify-icon>';
 
     const prefill = target.textContent;
+    noButton.setAttribute('cancelValue', prefill);
     target.innerHTML = "";
     target.style.display = "flex";
 
@@ -99,9 +102,11 @@ function renderClickToEdit(target) {
     }
 
     noButton.addEventListener("click", (e) => {
-      //const targetDiv = e.target.closest(".editableField");
-      //const input = e.target.closest("#input");
-      console.log({ targetDiv, input });
+      const targetDiv = e.target.closest(".editableField");
+      const cancelValue = e.target.closest("#noButton").getAttribute("cancelValue");
+      targetDiv.textContent = cancelValue;
+      console.log(targetDiv);
+      targetDiv.classList.remove("editing");
     });
 
     target.appendChild(inputField);
