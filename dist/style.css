@@ -61,3 +61,18 @@ body {
   width: 200px;
   height: 100%;
 }
+
+#priority {
+  flex-direction: row;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.priorityIndicator {
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.priorityIndicator.activated {
+  background-color: lightblue;
+}

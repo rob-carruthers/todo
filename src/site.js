@@ -34,13 +34,14 @@ class ToDoHandler {
 
   amendField(target, toDoItem) {
     let amendedItem = renderAmendField(target);
+    console.log(amendedItem);
     toDoItem[amendedItem.field] = amendedItem.newValue;
   }
 
   clickToEdit(target, toDoItem) {
     const yesButton = renderClickToEdit(target);
 
-    yesButton.addEventListener("click", (e) =>
+    yesButton.addEventListener("click", (e) => 
       this.amendField(e.target, toDoItem)
     );
   }
@@ -51,7 +52,8 @@ class ToDoHandler {
       const toDoDiv = renderToDoItem(
         todo.title,
         todo.description,
-        todo.dueDate
+        todo.dueDate,
+        todo.priority
       );
       toDoDiv.id = i;
 
@@ -59,10 +61,9 @@ class ToDoHandler {
         this.toDoClickOpenClose(e.target)
       );
       for (const child of toDoDiv.children) {
-        child.addEventListener("click", (e) =>
-          this.clickToEdit(e.target, todo)
-        );
-      }
+        child.addEventListener("click", (e) => 
+            this.clickToEdit(e.target, todo));
+      };
 
       toDoListDiv.appendChild(toDoDiv);
     }
@@ -82,7 +83,7 @@ const testTodo2 = new ToDo();
 testTodo2.title = "Another test.";
 testTodo2.description = "Another test task.";
 testTodo2.dueDate = new Date(2023, 5, 1, 0, 0);
-testTodo2.priority = 0;
+testTodo2.priority = 1;
 testTodo2.completed = false;
 
 const defaultToDos = new ToDoList("Default");
