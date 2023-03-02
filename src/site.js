@@ -28,7 +28,7 @@ class ToDoHandler {
     this._toDoLists.push(toDoList);
   }
 
-  ToDoClickOpenClose(target) {
+  toDoClickOpenClose(target) {
     renderClickOpenClose(target);
   }
 
@@ -45,7 +45,7 @@ class ToDoHandler {
     );
   }
 
-  render(ToDoListDiv) {
+  render(toDoListDiv) {
     const toDoList = this._toDoLists[this._currentToDoList];
     for (const [i, todo] of toDoList.list.entries()) {
       const toDoDiv = renderToDoItem(
@@ -56,7 +56,7 @@ class ToDoHandler {
       toDoDiv.id = i;
 
       toDoDiv.addEventListener("click", (e) =>
-        this.ToDoClickOpenClose(e.target)
+        this.toDoClickOpenClose(e.target)
       );
       for (const child of toDoDiv.children) {
         child.addEventListener("click", (e) =>
@@ -64,7 +64,7 @@ class ToDoHandler {
         );
       }
 
-      ToDoListDiv.appendChild(toDoDiv);
+      toDoListDiv.appendChild(toDoDiv);
     }
   }
 }
