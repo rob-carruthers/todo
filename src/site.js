@@ -85,9 +85,9 @@ testTodo2.dueDate = new Date(2023, 5, 1, 0, 0);
 testTodo2.priority = 0;
 testTodo2.completed = false;
 
-const allToDos = new ToDoList("All");
-allToDos.add(testTodo1);
-allToDos.add(testTodo2);
+const defaultToDos = new ToDoList("Default");
+defaultToDos.add(testTodo1);
+defaultToDos.add(testTodo2);
 
 const contentDiv = document.createElement("div");
 contentDiv.id = "content";
@@ -95,7 +95,7 @@ contentDiv.id = "content";
 const ToDoListDiv = document.createElement("div");
 ToDoListDiv.id = "ToDoListDiv";
 
-handler.add(allToDos);
+handler.add(defaultToDos);
 
 document.body.appendChild(header());
 contentDiv.appendChild(sideBar());
