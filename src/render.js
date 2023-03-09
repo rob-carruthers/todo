@@ -16,7 +16,7 @@ function footer() {
   const footerDiv = document.createElement("div");
   footerDiv.id = "footer";
   footerDiv.innerHTML =
-    '<div>© Rob Carruthers 2023 <a href="https://github.com/rob-carruthers/todo" target="_blank"><iconify-icon icon="mdi:github" style="color: black;"></iconify-icon></a></div>';
+    '<div id="footerText">© Rob Carruthers 2023 <a href="https://github.com/rob-carruthers/todo" target="_blank"><iconify-icon icon="mdi:github" style="color: black;"></iconify-icon></a></div>';
 
   return footerDiv;
 }
