@@ -72,6 +72,25 @@ body {
   height: 100%;
 }
 
+#selectorDiv {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 30px;
+}
+
+.toDoListSelector {
+  padding: 10px;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.toDoListSelector.selected {
+  background-color: aquamarine;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
 #priority {
   flex-direction: row;
   gap: 10px;

@@ -93,7 +93,20 @@ class ToDoHandler {
     toDoListDiv.appendChild(toDoDiv);
   }
 
-  render(toDoListDiv) {
+  renderSelectors(selectorDiv) {
+    for (const [i, toDoList] of this._toDoLists.entries()) {
+      const toDoListSelector = document.createElement("div");
+      toDoListSelector.classList.add("toDoListSelector");
+      toDoListSelector.textContent = toDoList.title;
+      toDoListSelector.id = i;
+      if (i === this._currentToDoList) {
+        toDoListSelector.classList.add("selected");
+      }
+      selectorDiv.appendChild(toDoListSelector);
+    }
+  }
+
+  renderToDoList(toDoListDiv) {
     const addNewToDoItemButton = document.createElement("div");
     addNewToDoItemButton.id = "addNewToDoItem";
     addNewToDoItemButton.textContent = "New todo";
@@ -138,7 +151,9 @@ testTodo2.completed = false;
 
 const defaultToDos = new ToDoList("Default");
 defaultToDos.add(testTodo1);
-defaultToDos.add(testTodo2);
+
+const workToDos = new ToDoList("Work");
+workToDos.add(testTodo2);
 
 const contentDiv = document.createElement("div");
 contentDiv.id = "content";
@@ -147,10 +162,19 @@ const ToDoListDiv = document.createElement("div");
 ToDoListDiv.id = "ToDoListDiv";
 
 handler.add(defaultToDos);
+handler.add(workToDos);
+
+const selectorDiv = document.createElement("div");
+selectorDiv.id = "selectorDiv";
+
+handler.renderSelectors(selectorDiv);
 
 document.body.appendChild(header());
-contentDiv.appendChild(sideBar());
+
+const sideBarDiv = sideBar();
+sideBarDiv.appendChild(selectorDiv);
+contentDiv.appendChild(sideBarDiv);
 contentDiv.appendChild(ToDoListDiv);
-handler.render(ToDoListDiv);
+handler.renderToDoList(ToDoListDiv);
 document.body.appendChild(contentDiv);
 document.body.appendChild(footer());
