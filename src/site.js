@@ -15,6 +15,21 @@ class ToDoHandler {
   constructor() {
     this._toDoLists = [];
     this._currentToDoList = 0;
+
+    this._contentDiv = document.createElement("div");
+    this._contentDiv.id = "content";
+
+    this._toDoListDiv = document.createElement("div");
+    this._toDoListDiv.id = "ToDoListDiv";
+
+    this._selectorDiv = document.createElement("div");
+    this._selectorDiv.id = "selectorDiv";
+
+    this._sideBarDiv = sideBar();
+    this._sideBarDiv.appendChild(this._selectorDiv);
+
+    this._contentDiv.appendChild(this._sideBarDiv);
+    this._contentDiv.appendChild(this._toDoListDiv);
   }
 
   get currentToDoList() {
@@ -74,7 +89,7 @@ class ToDoHandler {
     }
   }
 
-  addToDoItem(toDoListDiv) {
+  addToDoItem() {
     const newToDoItem = new ToDo();
     newToDoItem.title = "New todo";
     newToDoItem.description = "Description";
@@ -90,10 +105,10 @@ class ToDoHandler {
     );
     this.setToDoEventHandlers(toDoDiv, newToDoItem);
 
-    toDoListDiv.appendChild(toDoDiv);
+    this._toDoListDiv.appendChild(toDoDiv);
   }
 
-  renderSelectors(selectorDiv) {
+  renderSelectors() {
     for (const [i, toDoList] of this._toDoLists.entries()) {
       const toDoListSelector = document.createElement("div");
       toDoListSelector.classList.add("toDoListSelector");
@@ -102,20 +117,18 @@ class ToDoHandler {
       if (i === this._currentToDoList) {
         toDoListSelector.classList.add("selected");
       }
-      selectorDiv.appendChild(toDoListSelector);
+      this._selectorDiv.appendChild(toDoListSelector);
     }
   }
 
-  renderToDoList(toDoListDiv) {
+  renderToDoList() {
     const addNewToDoItemButton = document.createElement("div");
     addNewToDoItemButton.id = "addNewToDoItem";
     addNewToDoItemButton.textContent = "New todo";
 
-    addNewToDoItemButton.addEventListener("click", (e) =>
-      this.addToDoItem(toDoListDiv)
-    );
+    addNewToDoItemButton.addEventListener("click", (e) => this.addToDoItem());
 
-    toDoListDiv.appendChild(addNewToDoItemButton);
+    this._toDoListDiv.appendChild(addNewToDoItemButton);
     const toDoList = this._toDoLists[this._currentToDoList];
     for (const [i, todo] of toDoList.list.entries()) {
       const toDoDiv = renderToDoItem(
@@ -128,8 +141,17 @@ class ToDoHandler {
 
       this.setToDoEventHandlers(toDoDiv, todo);
 
-      toDoListDiv.appendChild(toDoDiv);
+      this._toDoListDiv.appendChild(toDoDiv);
     }
+  }
+
+  renderInitial() {
+    this.renderSelectors();
+    this.renderToDoList();
+
+    document.body.appendChild(header());    
+    document.body.appendChild(this._contentDiv);
+    document.body.appendChild(footer());
   }
 }
 
@@ -155,26 +177,7 @@ defaultToDos.add(testTodo1);
 const workToDos = new ToDoList("Work");
 workToDos.add(testTodo2);
 
-const contentDiv = document.createElement("div");
-contentDiv.id = "content";
-
-const ToDoListDiv = document.createElement("div");
-ToDoListDiv.id = "ToDoListDiv";
-
 handler.add(defaultToDos);
 handler.add(workToDos);
 
-const selectorDiv = document.createElement("div");
-selectorDiv.id = "selectorDiv";
-
-handler.renderSelectors(selectorDiv);
-
-document.body.appendChild(header());
-
-const sideBarDiv = sideBar();
-sideBarDiv.appendChild(selectorDiv);
-contentDiv.appendChild(sideBarDiv);
-contentDiv.appendChild(ToDoListDiv);
-handler.renderToDoList(ToDoListDiv);
-document.body.appendChild(contentDiv);
-document.body.appendChild(footer());
+handler.renderInitial();
