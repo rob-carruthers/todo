@@ -45,6 +45,15 @@ body {
   padding: 5px;
 }
 
+#addNewToDoList {
+  background-color: lightgreen;
+  border: 2px solid gray;
+  border-radius: 4px;
+  cursor: pointer;
+  align-self: baseline;
+  padding: 5px;
+}
+
 #ToDoListDiv {
   padding-top: 20px;
   display: flex;
@@ -67,16 +76,20 @@ body {
 }
 
 #sideBar {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
   background-color: rgb(98, 98, 98);
   width: 200px;
   height: 100%;
+  padding: 30px;
+  gap: 15px;
 }
 
 #selectorDiv {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 30px;
 }
 
 .toDoListSelector {

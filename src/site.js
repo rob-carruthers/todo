@@ -108,9 +108,9 @@ class ToDoHandler {
     this._toDoListDiv.appendChild(toDoDiv);
   }
 
-  switchToDoList(target, todo) {
+  switchToDoList(target) {
     const newToDoListId = parseInt(target.id);
-    
+
     for (let element of Array.from(this._selectorDiv.children)) {
       element.classList.remove("selected");
     }
@@ -121,7 +121,29 @@ class ToDoHandler {
     this.renderToDoList();
   }
 
+  addToDoList(target) {
+    console.log(target);
+    const newToDoList = new ToDoList("New List");
+    this._toDoLists.push(newToDoList);
+
+    const toDoListSelector = document.createElement("div");
+    toDoListSelector.classList.add("toDoListSelector");
+    toDoListSelector.textContent = newToDoList.title;
+    console.log(this._toDoLists);
+    toDoListSelector.id = this._toDoLists.length - 1;
+
+    toDoListSelector.addEventListener("click", (e) => this.switchToDoList(e.target));
+
+    this._selectorDiv.appendChild(toDoListSelector);
+  }
+
   renderSelectors() {
+    const addNewToDoListButton = document.createElement("div");
+    addNewToDoListButton.id = "addNewToDoList";
+    addNewToDoListButton.textContent = "New todo list";
+    addNewToDoListButton.addEventListener("click", (e) => this.addToDoList(e.target));
+    this._sideBarDiv.prepend(addNewToDoListButton);
+
     for (const [i, toDoList] of this._toDoLists.entries()) {
       const toDoListSelector = document.createElement("div");
       toDoListSelector.classList.add("toDoListSelector");
@@ -131,7 +153,7 @@ class ToDoHandler {
         toDoListSelector.classList.add("selected");
       }
 
-      toDoListSelector.addEventListener("click", (e) => this.switchToDoList(e.target, toDoList));
+      toDoListSelector.addEventListener("click", (e) => this.switchToDoList(e.target));
 
       this._selectorDiv.appendChild(toDoListSelector);
     }
