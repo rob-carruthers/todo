@@ -108,6 +108,19 @@ class ToDoHandler {
     this._toDoListDiv.appendChild(toDoDiv);
   }
 
+  switchToDoList(target, todo) {
+    const newToDoListId = parseInt(target.id);
+    
+    for (let element of Array.from(this._selectorDiv.children)) {
+      element.classList.remove("selected");
+    }
+    target.classList.add("selected");
+
+    this._currentToDoList = newToDoListId;
+    this.clearToDoList();
+    this.renderToDoList();
+  }
+
   renderSelectors() {
     for (const [i, toDoList] of this._toDoLists.entries()) {
       const toDoListSelector = document.createElement("div");
@@ -117,8 +130,15 @@ class ToDoHandler {
       if (i === this._currentToDoList) {
         toDoListSelector.classList.add("selected");
       }
+
+      toDoListSelector.addEventListener("click", (e) => this.switchToDoList(e.target, toDoList));
+
       this._selectorDiv.appendChild(toDoListSelector);
     }
+  }
+
+  clearToDoList() {
+    this._toDoListDiv.textContent = "";
   }
 
   renderToDoList() {
@@ -149,7 +169,7 @@ class ToDoHandler {
     this.renderSelectors();
     this.renderToDoList();
 
-    document.body.appendChild(header());    
+    document.body.appendChild(header());
     document.body.appendChild(this._contentDiv);
     document.body.appendChild(footer());
   }

@@ -82,12 +82,14 @@ body {
 .toDoListSelector {
   padding: 10px;
   font-size: 1.2rem;
+  border: 1px solid transparent;
   cursor: pointer;
 }
 
 .toDoListSelector.selected {
+  font-weight: bold;
   background-color: aquamarine;
-  border: 1px solid black;
+  border-color: black;
   border-radius: 5px;
 }
 
