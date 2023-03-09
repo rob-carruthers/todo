@@ -117,7 +117,7 @@ class ToDoHandler {
     target.classList.add("selected");
 
     this._currentToDoList = newToDoListId;
-    this.clearToDoList();
+    this.clearToDoListDiv();
     this.renderToDoList();
   }
 
@@ -159,7 +159,7 @@ class ToDoHandler {
     }
   }
 
-  clearToDoList() {
+  clearToDoListDiv() {
     this._toDoListDiv.textContent = "";
   }
 
