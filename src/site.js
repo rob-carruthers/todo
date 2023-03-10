@@ -177,15 +177,13 @@ class ToDoHandler {
     const nextSibling = selector.nextSibling;
 
     selector.remove();
-    delete this._toDoLists[this._currentToDoList]
+    delete this._toDoLists[this._currentToDoList];
 
     if (previousSibling) {
       previousSibling.click();
     } else {
       nextSibling.click();
     }
-
-    
   }
 
   renderSelectors() {
@@ -219,6 +217,8 @@ class ToDoHandler {
   }
 
   renderToDoList() {
+    console.log(Object.keys(this._toDoLists).length);
+    const numToDoLists = Object.keys(this._toDoLists).length;
     const toDoList = this._toDoLists[this._currentToDoList];
     const toDoListButtonsDiv = document.createElement("div");
     toDoListButtonsDiv.id = "toDoListButtonsDiv";
@@ -227,20 +227,21 @@ class ToDoHandler {
     addNewToDoItemButton.classList.add("toDoListButton");
     addNewToDoItemButton.id = "addNewToDoItem";
     addNewToDoItemButton.textContent = "New todo";
-
-    const deleteToDoListButton = document.createElement("div");
-    deleteToDoListButton.classList.add("toDoListButton");
-    deleteToDoListButton.id = "deleteToDoList";
-    deleteToDoListButton.setAttribute("toDoListuuid", toDoList.uuid);
-    deleteToDoListButton.textContent = "Delete List";
-
     toDoListButtonsDiv.appendChild(addNewToDoItemButton);
-    toDoListButtonsDiv.appendChild(deleteToDoListButton);
+
+    if (numToDoLists > 1) {
+      const deleteToDoListButton = document.createElement("div");
+      deleteToDoListButton.classList.add("toDoListButton");
+      deleteToDoListButton.id = "deleteToDoList";
+      deleteToDoListButton.setAttribute("toDoListuuid", toDoList.uuid);
+      deleteToDoListButton.textContent = "Delete List";
+      deleteToDoListButton.addEventListener("click", (e) =>
+        this.deleteToDoList(e.target)
+      );
+      toDoListButtonsDiv.appendChild(deleteToDoListButton);
+    }
 
     addNewToDoItemButton.addEventListener("click", () => this.addToDoItem());
-    deleteToDoListButton.addEventListener("click", (e) =>
-      this.deleteToDoList(e.target)
-    );
 
     this._toDoListDiv.appendChild(toDoListButtonsDiv);
 
