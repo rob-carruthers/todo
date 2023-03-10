@@ -108,8 +108,14 @@ class ToDoHandler {
     this._toDoListDiv.appendChild(toDoDiv);
   }
 
-  deleteToDoItem(target, toDoItem) {
-    console.log({ target, toDoItem });
+  deleteToDoItem(target, targetToDoItem) {
+    const toDoDiv = target.closest(".toDoItem");
+    const toDoList = this._toDoLists[this._currentToDoList].list
+    const isTarget = (toDoItem) => toDoItem === targetToDoItem;
+    const toDoItemIndex = toDoList.findIndex(isTarget);
+
+    toDoDiv.remove();
+    toDoList.splice(toDoItemIndex, 1);
   }
 
   switchToDoList(target) {
