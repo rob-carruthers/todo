@@ -72,7 +72,6 @@ class ToDoHandler {
 
     toDoItem.priority = target.id;
     target.classList.add("activated");
-    console.log(this._toDoLists[this._currentToDoList]);
   }
 
   setToDoEventHandlers(toDoDiv, todo) {
@@ -142,7 +141,6 @@ class ToDoHandler {
 
   switchToDoList(target) {
     const newToDoListuuid = target.getAttribute("uuid");
-    console.log(newToDoListuuid);
 
     for (let element of Array.from(this._selectorDiv.children)) {
       element.classList.remove("selected");
@@ -155,7 +153,6 @@ class ToDoHandler {
   }
 
   addToDoList(target) {
-    console.log(target);
     const newToDoList = new ToDoList("New List");
     this._toDoLists[newToDoList.uuid] = newToDoList;
 
@@ -179,10 +176,7 @@ class ToDoHandler {
     const previousSibling = selector.previousSibling;
     const nextSibling = selector.nextSibling;
 
-    console.log(selector, previousSibling, nextSibling);
-
     selector.remove();
-    //this._toDoLists.splice(this._currentToDoList, 1);
     delete this._toDoLists[this._currentToDoList]
 
     if (previousSibling) {
@@ -226,7 +220,6 @@ class ToDoHandler {
 
   renderToDoList() {
     const toDoList = this._toDoLists[this._currentToDoList];
-    console.log(toDoList);
     const toDoListButtonsDiv = document.createElement("div");
     toDoListButtonsDiv.id = "toDoListButtonsDiv";
 
