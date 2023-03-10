@@ -192,6 +192,7 @@ class ToDoHandler {
       toDoListSelector.classList.add("toDoListSelector");
       toDoListSelector.textContent = toDoList.title;
       toDoListSelector.id = i;
+      toDoListSelector.setAttribute("uuid", toDoList.uuid)
       if (i === this._currentToDoList) {
         toDoListSelector.classList.add("selected");
       }
@@ -209,6 +210,7 @@ class ToDoHandler {
   }
 
   renderToDoList() {
+    const toDoList = this._toDoLists[this._currentToDoList];
     const toDoListButtonsDiv = document.createElement("div");
     toDoListButtonsDiv.id = "toDoListButtonsDiv";
 
@@ -220,6 +222,7 @@ class ToDoHandler {
     const deleteToDoListButton = document.createElement("div");
     deleteToDoListButton.classList.add("toDoListButton");
     deleteToDoListButton.id = "deleteToDoList";
+    deleteToDoListButton.setAttribute("toDoListuuid", toDoList.uuid);
     deleteToDoListButton.textContent = "Delete List";
 
     toDoListButtonsDiv.appendChild(addNewToDoItemButton);
@@ -229,7 +232,7 @@ class ToDoHandler {
     deleteToDoListButton.addEventListener("click", () => this.deleteToDoList())
 
     this._toDoListDiv.appendChild(toDoListButtonsDiv);
-    const toDoList = this._toDoLists[this._currentToDoList];
+
     for (const [i, todo] of toDoList.list.entries()) {
       const toDoDiv = renderToDoItem(
         todo.title,
@@ -238,6 +241,7 @@ class ToDoHandler {
         todo.priority
       );
       toDoDiv.id = i;
+      toDoDiv.setAttribute("uuid", todo.uuid);
 
       this.setToDoEventHandlers(toDoDiv, todo);
 
