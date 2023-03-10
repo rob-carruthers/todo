@@ -69,6 +69,41 @@ function renderAmendField(target) {
   return { field: field, newValue: newValue };
 }
 
+function renderModalDeleteDialog(parentDiv) {
+  const modalDiv = document.createElement("div");
+  modalDiv.id = "modalDeleteDialog";
+  modalDiv.setAttribute("delete", "false");
+
+  const modalBox = document.createElement("div");
+  modalBox.id = "modalDeleteBox";
+  
+  const modalText = document.createElement("div");
+  modalText.id = "modalDeleteText";
+  modalText.textContent = "Really delete?";
+
+  const modalButtonsDiv = document.createElement("div");
+  modalButtonsDiv.id = "modalButtonsDiv";
+
+  const deleteButton = document.createElement("div");
+  deleteButton.classList.add("modalButton");
+  deleteButton.id = "modalDeleteConfirm";
+  deleteButton.textContent = "Delete";
+
+  const cancelButton = document.createElement("div");
+  cancelButton.classList.add("modalButton");
+  cancelButton.id = "modalDeleteCancel";
+  cancelButton.textContent = "Cancel";
+
+  modalBox.appendChild(modalText);
+  modalButtonsDiv.appendChild(deleteButton);
+  modalButtonsDiv.appendChild(cancelButton);
+  modalBox.appendChild(modalButtonsDiv);
+  modalDiv.appendChild(modalBox);
+  parentDiv.appendChild(modalDiv);
+
+  return({modalDiv, deleteButton, cancelButton});
+}
+
 function renderClickToEdit(target) {
   let field = target.closest(".editableField");
   if (field != null) {
@@ -175,4 +210,5 @@ export {
   renderClickToEdit,
   renderClickOpenClose,
   renderAmendField,
+  renderModalDeleteDialog
 };

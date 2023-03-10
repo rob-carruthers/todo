@@ -140,3 +140,42 @@ body {
 .priorityIndicator.activated {
   background-color: lightblue;
 }
+
+#modalDeleteDialog {
+  background-color: rgb(80, 80, 80, 0.6);
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#modalDeleteBox {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  border: 1px solid black;
+  background-color: white;
+  padding: 30px;
+  border-radius: 7px;
+}
+
+#modalButtonsDiv {
+  display: flex;
+  gap: 10px;
+}
+
+.modalButton {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+#modalDeleteConfirm {
+  background-color: rgb(212, 94, 94);
+}

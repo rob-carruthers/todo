@@ -7,6 +7,7 @@ import {
   renderClickToEdit,
   renderAmendField,
   renderToDoItem,
+  renderModalDeleteDialog
 } from "./render";
 import "iconify-icon";
 import { add } from "date-fns";
@@ -106,27 +107,37 @@ class ToDoHandler {
     this.setToDoEventHandlers(toDoDiv, newToDoItem);
 
     const deleteToDoButton = document.createElement("div");
-      deleteToDoButton.textContent = "Delete";
-      deleteToDoButton.style.display = "none";
-      deleteToDoButton.classList.add("deleteToDoButton");
+    deleteToDoButton.textContent = "Delete";
+    deleteToDoButton.style.display = "none";
+    deleteToDoButton.classList.add("deleteToDoButton");
 
-      deleteToDoButton.addEventListener("click", (e) =>
-        this.deleteToDoItem(e.target, newToDoItem)
-      );
+    deleteToDoButton.addEventListener("click", (e) =>
+      this.deleteToDoItem(e.target, newToDoItem)
+    );
 
-      toDoDiv.appendChild(deleteToDoButton);
+    toDoDiv.appendChild(deleteToDoButton);
 
     this._toDoListDiv.appendChild(toDoDiv);
   }
 
   deleteToDoItem(target, targetToDoItem) {
-    const toDoDiv = target.closest(".toDoItem");
-    const toDoList = this._toDoLists[this._currentToDoList].list
-    const isTarget = (toDoItem) => toDoItem === targetToDoItem;
-    const toDoItemIndex = toDoList.findIndex(isTarget);
+    const modalButtons = renderModalDeleteDialog(document.body);
+    const deleteButton = modalButtons.deleteButton;
+    const cancelButton = modalButtons.cancelButton;
+    const modalDiv = modalButtons.modalDiv;
 
-    toDoDiv.remove();
-    toDoList.splice(toDoItemIndex, 1);
+    deleteButton.addEventListener("click", () => {
+      const toDoDiv = target.closest(".toDoItem");
+      const toDoList = this._toDoLists[this._currentToDoList].list;
+      const isTarget = (toDoItem) => toDoItem === targetToDoItem;
+      const toDoItemIndex = toDoList.findIndex(isTarget);
+
+      toDoDiv.remove();
+      toDoList.splice(toDoItemIndex, 1);
+      modalDiv.remove();
+    });
+
+    cancelButton.addEventListener("click", () => modalDiv.remove());
   }
 
   switchToDoList(target) {
