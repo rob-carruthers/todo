@@ -171,6 +171,13 @@ class ToDoHandler {
     this._selectorDiv.appendChild(toDoListSelector);
   }
 
+  deleteToDoList() {
+    const toDoList = this._toDoLists[this._currentToDoList];
+    console.log("Hello!");
+    this._toDoLists.splice(this._currentToDoList, 1);
+    console.log(this._toDoLists);
+  }
+
   renderSelectors() {
     const addNewToDoListButton = document.createElement("div");
     addNewToDoListButton.id = "addNewToDoList";
@@ -202,13 +209,26 @@ class ToDoHandler {
   }
 
   renderToDoList() {
+    const toDoListButtonsDiv = document.createElement("div");
+    toDoListButtonsDiv.id = "toDoListButtonsDiv";
+
     const addNewToDoItemButton = document.createElement("div");
+    addNewToDoItemButton.classList.add("toDoListButton");
     addNewToDoItemButton.id = "addNewToDoItem";
     addNewToDoItemButton.textContent = "New todo";
 
-    addNewToDoItemButton.addEventListener("click", (e) => this.addToDoItem());
+    const deleteToDoListButton = document.createElement("div");
+    deleteToDoListButton.classList.add("toDoListButton");
+    deleteToDoListButton.id = "deleteToDoList";
+    deleteToDoListButton.textContent = "Delete List";
 
-    this._toDoListDiv.appendChild(addNewToDoItemButton);
+    toDoListButtonsDiv.appendChild(addNewToDoItemButton);
+    toDoListButtonsDiv.appendChild(deleteToDoListButton);
+
+    addNewToDoItemButton.addEventListener("click", () => this.addToDoItem());
+    deleteToDoListButton.addEventListener("click", () => this.deleteToDoList())
+
+    this._toDoListDiv.appendChild(toDoListButtonsDiv);
     const toDoList = this._toDoLists[this._currentToDoList];
     for (const [i, todo] of toDoList.list.entries()) {
       const toDoDiv = renderToDoItem(

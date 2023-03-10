@@ -45,13 +45,27 @@ body {
   margin: 0;
 }
 
-#addNewToDoItem {
-  background-color: lightgreen;
+.toDoListButton {
   border: 2px solid gray;
   border-radius: 4px;
   cursor: pointer;
   align-self: baseline;
   padding: 5px;
+}
+
+#addNewToDoItem {
+  background-color: lightgreen;
+}
+
+#deleteToDoList {
+  background-color: rgb(212, 94, 94);
+}
+
+#toDoListButtonsDiv {
+  align-self: baseline;
+  flex-grow: 0;
+  display: flex;
+  gap: 10px;
 }
 
 #addNewToDoList {
