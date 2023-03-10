@@ -1,10 +1,7 @@
-import {v4 as uuidv4} from "uuid";
-
 class ToDoList {
   constructor(title) {
     this._title = title;
     this.list = [];
-    this._uuid = uuidv4();
   }
 
   get title() {
@@ -13,10 +10,6 @@ class ToDoList {
 
   set title(value) {
     this._title = value;
-  }
-
-  get uuid() {
-    return this._uuid;
   }
 
   add(todo) {
@@ -35,7 +28,6 @@ class ToDo {
     this._dueDate = dueDate;
     this._priority = priority;
     this._completed = false;
-    this._uuid = uuidv4();
   }
 
   get title() {
@@ -76,10 +68,6 @@ class ToDo {
 
   set completed(value) {
     this._completed = value; 
-  }
-
-  get uuid() {
-    return this._uuid;
   }
 }
 
