@@ -108,6 +108,10 @@ class ToDoHandler {
     this._toDoListDiv.appendChild(toDoDiv);
   }
 
+  deleteToDoItem(target, toDoItem) {
+    console.log({ target, toDoItem });
+  }
+
   switchToDoList(target) {
     const newToDoListId = parseInt(target.id);
 
@@ -132,7 +136,9 @@ class ToDoHandler {
     console.log(this._toDoLists);
     toDoListSelector.id = this._toDoLists.length - 1;
 
-    toDoListSelector.addEventListener("click", (e) => this.switchToDoList(e.target));
+    toDoListSelector.addEventListener("click", (e) =>
+      this.switchToDoList(e.target)
+    );
 
     this._selectorDiv.appendChild(toDoListSelector);
   }
@@ -141,7 +147,9 @@ class ToDoHandler {
     const addNewToDoListButton = document.createElement("div");
     addNewToDoListButton.id = "addNewToDoList";
     addNewToDoListButton.textContent = "New todo list";
-    addNewToDoListButton.addEventListener("click", (e) => this.addToDoList(e.target));
+    addNewToDoListButton.addEventListener("click", (e) =>
+      this.addToDoList(e.target)
+    );
     this._sideBarDiv.prepend(addNewToDoListButton);
 
     for (const [i, toDoList] of this._toDoLists.entries()) {
@@ -153,7 +161,9 @@ class ToDoHandler {
         toDoListSelector.classList.add("selected");
       }
 
-      toDoListSelector.addEventListener("click", (e) => this.switchToDoList(e.target));
+      toDoListSelector.addEventListener("click", (e) =>
+        this.switchToDoList(e.target)
+      );
 
       this._selectorDiv.appendChild(toDoListSelector);
     }
@@ -182,6 +192,17 @@ class ToDoHandler {
       toDoDiv.id = i;
 
       this.setToDoEventHandlers(toDoDiv, todo);
+
+      const deleteToDoButton = document.createElement("div");
+      deleteToDoButton.textContent = "Delete";
+      deleteToDoButton.style.display = "none";
+      deleteToDoButton.classList.add("deleteToDoButton");
+
+      deleteToDoButton.addEventListener("click", (e) =>
+        this.deleteToDoItem(e.target, todo)
+      );
+
+      toDoDiv.appendChild(deleteToDoButton);
 
       this._toDoListDiv.appendChild(toDoDiv);
     }

@@ -87,6 +87,14 @@ body {
   max-width: fit-content;
 }
 
+.deleteToDoButton {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px;
+  margin-top: 10px;
+  background-color: rgb(212, 94, 94);
+}
+
 #sideBar {
   display: flex;
   flex-direction: column;
