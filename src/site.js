@@ -105,6 +105,17 @@ class ToDoHandler {
     );
     this.setToDoEventHandlers(toDoDiv, newToDoItem);
 
+    const deleteToDoButton = document.createElement("div");
+      deleteToDoButton.textContent = "Delete";
+      deleteToDoButton.style.display = "none";
+      deleteToDoButton.classList.add("deleteToDoButton");
+
+      deleteToDoButton.addEventListener("click", (e) =>
+        this.deleteToDoItem(e.target, newToDoItem)
+      );
+
+      toDoDiv.appendChild(deleteToDoButton);
+
     this._toDoListDiv.appendChild(toDoDiv);
   }
 
