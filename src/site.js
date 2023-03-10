@@ -7,7 +7,7 @@ import {
   renderClickToEdit,
   renderAmendField,
   renderToDoItem,
-  renderModalDeleteDialog
+  renderModalDeleteDialog,
 } from "./render";
 import "iconify-icon";
 import { add } from "date-fns";
@@ -171,11 +171,26 @@ class ToDoHandler {
     this._selectorDiv.appendChild(toDoListSelector);
   }
 
-  deleteToDoList() {
-    const toDoList = this._toDoLists[this._currentToDoList];
-    console.log("Hello!");
+  deleteToDoList(button) {
+    const targetUUID = button.getAttribute("toDoListuuid");
+    const selector = Array.from(this._selectorDiv.children).filter((el) => {
+      return el.getAttribute("uuid") === targetUUID;
+    })[0];
+    const previousSibling = selector.previousSibling;
+    const nextSibling = selector.nextSibling;
+
+    console.log(selector, previousSibling, nextSibling);
+
+    selector.remove();
     this._toDoLists.splice(this._currentToDoList, 1);
-    console.log(this._toDoLists);
+
+    if (previousSibling) {
+      previousSibling.click();
+    } else {
+      nextSibling.click();
+    }
+
+    
   }
 
   renderSelectors() {
@@ -192,7 +207,7 @@ class ToDoHandler {
       toDoListSelector.classList.add("toDoListSelector");
       toDoListSelector.textContent = toDoList.title;
       toDoListSelector.id = i;
-      toDoListSelector.setAttribute("uuid", toDoList.uuid)
+      toDoListSelector.setAttribute("uuid", toDoList.uuid);
       if (i === this._currentToDoList) {
         toDoListSelector.classList.add("selected");
       }
@@ -229,7 +244,9 @@ class ToDoHandler {
     toDoListButtonsDiv.appendChild(deleteToDoListButton);
 
     addNewToDoItemButton.addEventListener("click", () => this.addToDoItem());
-    deleteToDoListButton.addEventListener("click", () => this.deleteToDoList())
+    deleteToDoListButton.addEventListener("click", (e) =>
+      this.deleteToDoList(e.target)
+    );
 
     this._toDoListDiv.appendChild(toDoListButtonsDiv);
 
