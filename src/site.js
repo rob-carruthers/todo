@@ -14,8 +14,8 @@ import { add } from "date-fns";
 
 class ToDoHandler {
   constructor() {
-    this._toDoLists = [];
-    this._currentToDoList = 0;
+    this._toDoLists = {};
+    this._currentToDoList = null;
 
     this._contentDiv = document.createElement("div");
     this._contentDiv.id = "content";
@@ -42,7 +42,7 @@ class ToDoHandler {
   }
 
   add(toDoList) {
-    this._toDoLists.push(toDoList);
+    this._toDoLists[toDoList.uuid] = toDoList;
   }
 
   toDoClickOpenClose(target) {
@@ -141,14 +141,15 @@ class ToDoHandler {
   }
 
   switchToDoList(target) {
-    const newToDoListId = parseInt(target.id);
+    const newToDoListuuid = target.getAttribute("uuid");
+    console.log(newToDoListuuid);
 
     for (let element of Array.from(this._selectorDiv.children)) {
       element.classList.remove("selected");
     }
     target.classList.add("selected");
 
-    this._currentToDoList = newToDoListId;
+    this._currentToDoList = newToDoListuuid;
     this.clearToDoListDiv();
     this.renderToDoList();
   }
@@ -156,13 +157,12 @@ class ToDoHandler {
   addToDoList(target) {
     console.log(target);
     const newToDoList = new ToDoList("New List");
-    this._toDoLists.push(newToDoList);
+    this._toDoLists[newToDoList.uuid] = newToDoList;
 
     const toDoListSelector = document.createElement("div");
     toDoListSelector.classList.add("toDoListSelector");
     toDoListSelector.textContent = newToDoList.title;
-    console.log(this._toDoLists);
-    toDoListSelector.id = this._toDoLists.length - 1;
+    toDoListSelector.setAttribute("uuid", newToDoList.uuid);
 
     toDoListSelector.addEventListener("click", (e) =>
       this.switchToDoList(e.target)
@@ -182,7 +182,8 @@ class ToDoHandler {
     console.log(selector, previousSibling, nextSibling);
 
     selector.remove();
-    this._toDoLists.splice(this._currentToDoList, 1);
+    //this._toDoLists.splice(this._currentToDoList, 1);
+    delete this._toDoLists[this._currentToDoList]
 
     if (previousSibling) {
       previousSibling.click();
@@ -202,13 +203,12 @@ class ToDoHandler {
     );
     this._sideBarDiv.prepend(addNewToDoListButton);
 
-    for (const [i, toDoList] of this._toDoLists.entries()) {
+    for (const [uuid, toDoList] of Object.entries(this._toDoLists)) {
       const toDoListSelector = document.createElement("div");
       toDoListSelector.classList.add("toDoListSelector");
       toDoListSelector.textContent = toDoList.title;
-      toDoListSelector.id = i;
-      toDoListSelector.setAttribute("uuid", toDoList.uuid);
-      if (i === this._currentToDoList) {
+      toDoListSelector.setAttribute("uuid", uuid);
+      if (uuid === this._currentToDoList) {
         toDoListSelector.classList.add("selected");
       }
 
@@ -226,6 +226,7 @@ class ToDoHandler {
 
   renderToDoList() {
     const toDoList = this._toDoLists[this._currentToDoList];
+    console.log(toDoList);
     const toDoListButtonsDiv = document.createElement("div");
     toDoListButtonsDiv.id = "toDoListButtonsDiv";
 
@@ -250,14 +251,13 @@ class ToDoHandler {
 
     this._toDoListDiv.appendChild(toDoListButtonsDiv);
 
-    for (const [i, todo] of toDoList.list.entries()) {
+    for (const [uuid, todo] of toDoList.list.entries()) {
       const toDoDiv = renderToDoItem(
         todo.title,
         todo.description,
         todo.dueDate,
         todo.priority
       );
-      toDoDiv.id = i;
       toDoDiv.setAttribute("uuid", todo.uuid);
 
       this.setToDoEventHandlers(toDoDiv, todo);
@@ -305,6 +305,7 @@ testTodo2.completed = false;
 
 const defaultToDos = new ToDoList("Default");
 defaultToDos.add(testTodo1);
+handler.currentToDoList = defaultToDos.uuid;
 
 const workToDos = new ToDoList("Work");
 workToDos.add(testTodo2);
