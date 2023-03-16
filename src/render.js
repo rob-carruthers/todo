@@ -69,6 +69,45 @@ function renderAmendField(target) {
   return { field: field, newValue: newValue };
 }
 
+function renderModalRenameDialog(parentDiv) {
+  const modalDiv = document.createElement("div");
+  modalDiv.id = "modalDeleteDialog";
+  modalDiv.setAttribute("delete", "false");
+
+  const modalBox = document.createElement("div");
+  modalBox.id = "modalDeleteBox";
+  
+  const modalText = document.createElement("div");
+  modalText.id = "modalDeleteText";
+  modalText.textContent = "Enter new name:";
+
+  const modalInput = document.createElement("input")
+  modalInput.id = "modalInput";
+
+  const modalButtonsDiv = document.createElement("div");
+  modalButtonsDiv.id = "modalButtonsDiv";
+
+  const renameButton = document.createElement("div");
+  renameButton.classList.add("modalButton");
+  renameButton.id = "modalRenameConfirm";
+  renameButton.textContent = "Rename";
+
+  const cancelButton = document.createElement("div");
+  cancelButton.classList.add("modalButton");
+  cancelButton.id = "modalDeleteCancel";
+  cancelButton.textContent = "Cancel";
+
+  modalBox.appendChild(modalText);
+  modalBox.appendChild(modalInput);
+  modalButtonsDiv.appendChild(renameButton);
+  modalButtonsDiv.appendChild(cancelButton);
+  modalBox.appendChild(modalButtonsDiv);
+  modalDiv.appendChild(modalBox);
+  parentDiv.appendChild(modalDiv);
+
+  return({modalDiv, renameButton, cancelButton});
+}
+
 function renderModalDeleteDialog(parentDiv) {
   const modalDiv = document.createElement("div");
   modalDiv.id = "modalDeleteDialog";
@@ -210,5 +249,6 @@ export {
   renderClickToEdit,
   renderClickOpenClose,
   renderAmendField,
-  renderModalDeleteDialog
+  renderModalDeleteDialog,
+  renderModalRenameDialog
 };

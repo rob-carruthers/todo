@@ -8,6 +8,7 @@ import {
   renderAmendField,
   renderToDoItem,
   renderModalDeleteDialog,
+  renderModalRenameDialog
 } from "./render";
 import "iconify-icon";
 import { add, parse } from "date-fns";
@@ -65,7 +66,7 @@ class ToDoHandler {
 
     toDoItem.priority = target.id;
     target.classList.add("activated");
-    
+
     this.saveToLocalStorage();
   }
 
@@ -112,7 +113,7 @@ class ToDoHandler {
     toDoDiv.appendChild(deleteToDoButton);
 
     this.toDoListDiv.appendChild(toDoDiv);
-    
+
     this.saveToLocalStorage();
   }
 
@@ -134,7 +135,7 @@ class ToDoHandler {
     });
 
     cancelButton.addEventListener("click", () => modalDiv.remove());
-    
+
     this.saveToLocalStorage();
   }
 
@@ -149,7 +150,7 @@ class ToDoHandler {
     this.currentToDoList = newToDoListuuid;
     this.clearToDoListDiv();
     this.renderToDoList();
-    
+
     this.saveToLocalStorage();
   }
 
@@ -167,7 +168,7 @@ class ToDoHandler {
     );
 
     this.selectorDiv.appendChild(toDoListSelector);
-    
+
     this.saveToLocalStorage();
   }
 
@@ -195,8 +196,31 @@ class ToDoHandler {
       modalDiv.remove();
     });
     cancelButton.addEventListener("click", () => modalDiv.remove());
-    
+
     this.saveToLocalStorage();
+  }
+
+  renameToDoList(button) {
+    const targetUUID = button.getAttribute("toDoListuuid");
+    const selector = Array.from(this.selectorDiv.children).filter((el) => {
+      return el.getAttribute("uuid") === targetUUID;
+    })[0];
+
+    const modalButtons = renderModalRenameDialog(document.body);
+    const renameButton = modalButtons.renameButton;
+    const cancelButton = modalButtons.cancelButton;
+    const modalDiv = modalButtons.modalDiv;
+
+    cancelButton.addEventListener("click", () => modalDiv.remove());
+    renameButton.addEventListener("click", (e) => {
+      const newTitle = e.target.parentElement.previousSibling.value;
+
+      selector.textContent = newTitle;
+      this.toDoLists[this.currentToDoList].title = newTitle;
+      modalDiv.remove();
+
+      this.saveToLocalStorage();
+    });    
   }
 
   renderSelectors() {
@@ -253,25 +277,24 @@ class ToDoHandler {
   }
 
   loadFromLocalStorage() {
-    this.toDoLists = JSON.parse(localStorage['toDoLists']);
+    this.toDoLists = JSON.parse(localStorage["toDoLists"]);
     for (const [key, value] of Object.entries(this.toDoLists)) {
       for (const toDoItem of value.list) {
         let dateString = toDoItem.dueDate.slice(0, -8);
         toDoItem.dueDate = parse(dateString, "yyyy-MM-dd'T'HH:mm", new Date());
       }
     }
-    this.currentToDoList = localStorage['currentToDoList'];
+    this.currentToDoList = localStorage["currentToDoList"];
   }
 
   saveToLocalStorage() {
-    localStorage['toDoLists'] = JSON.stringify(this.toDoLists);
-    localStorage['currentToDoList'] = this.currentToDoList;
+    localStorage["toDoLists"] = JSON.stringify(this.toDoLists);
+    localStorage["currentToDoList"] = this.currentToDoList;
   }
 
   renderToDoList() {
     const numToDoLists = Object.keys(this.toDoLists).length;
     const toDoList = this.toDoLists[this.currentToDoList];
-    console.log(toDoList);
     const toDoListButtonsDiv = document.createElement("div");
     toDoListButtonsDiv.id = "toDoListButtonsDiv";
 
@@ -293,7 +316,17 @@ class ToDoHandler {
       toDoListButtonsDiv.appendChild(deleteToDoListButton);
     }
 
+    const renameToDoListButton = document.createElement("div");
+    renameToDoListButton.classList.add("toDoListButton");
+    renameToDoListButton.id = "renameToDoList";
+    renameToDoListButton.setAttribute("toDoListuuid", toDoList.uuid);
+    renameToDoListButton.textContent = "Rename todo list";
+    toDoListButtonsDiv.appendChild(renameToDoListButton);
+
     addNewToDoItemButton.addEventListener("click", () => this.addToDoItem());
+    renameToDoListButton.addEventListener("click", (e) =>
+      this.renameToDoList(e.target)
+    );
 
     this.toDoListDiv.appendChild(toDoListButtonsDiv);
     for (const [uuid, todo] of toDoList.list.entries()) {
@@ -323,7 +356,7 @@ class ToDoHandler {
   }
 
   renderInitial() {
-    if (localStorage['toDoLists']) { 
+    if (localStorage["toDoLists"]) {
       this.loadFromLocalStorage();
     } else {
       this.createExampleToDos();

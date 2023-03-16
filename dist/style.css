@@ -61,6 +61,10 @@ body {
   background-color: rgb(212, 94, 94);
 }
 
+#renameToDoList {
+  background-color: rgb(180, 247, 247);
+}
+
 #toDoListButtonsDiv {
   align-self: baseline;
   flex-grow: 0;
