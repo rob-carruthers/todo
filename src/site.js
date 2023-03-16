@@ -224,6 +224,29 @@ class ToDoHandler {
     this._toDoListDiv.textContent = "";
   }
 
+  createExampleToDos() {
+    let exampleTodoList = new ToDoList("Default");
+    let exampleTodo = new ToDo();
+    exampleTodo.title = "Test";
+    exampleTodo.description = "A test task.";
+    exampleTodo.dueDate = new Date(2023, 5, 1, 0, 0);
+    exampleTodo.priority = 0;
+    exampleTodo.completed = false;
+    exampleTodoList.add(exampleTodo);
+    this._currentToDoList = exampleTodoList.uuid;
+    this.add(exampleTodoList);
+
+    exampleTodoList = new ToDoList("Work");
+    exampleTodo = new ToDo();
+    exampleTodo.title = "Another test.";
+    exampleTodo.description = "Another test task.";
+    exampleTodo.dueDate = new Date(2023, 5, 1, 0, 0);
+    exampleTodo.priority = 1;
+    exampleTodo.completed = false;
+    exampleTodoList.add(exampleTodo);
+    this.add(exampleTodoList);
+  }
+
   renderToDoList() {
     console.log(Object.keys(this._toDoLists).length);
     const numToDoLists = Object.keys(this._toDoLists).length;
@@ -280,6 +303,7 @@ class ToDoHandler {
   }
 
   renderInitial() {
+    this.createExampleToDos();
     this.renderSelectors();
     this.renderToDoList();
 
@@ -290,29 +314,4 @@ class ToDoHandler {
 }
 
 const handler = new ToDoHandler();
-
-const testTodo1 = new ToDo();
-testTodo1.title = "Test";
-testTodo1.description = "A test task.";
-testTodo1.dueDate = new Date(2023, 5, 1, 0, 0);
-testTodo1.priority = 0;
-testTodo1.completed = false;
-
-const testTodo2 = new ToDo();
-testTodo2.title = "Another test.";
-testTodo2.description = "Another test task.";
-testTodo2.dueDate = new Date(2023, 5, 1, 0, 0);
-testTodo2.priority = 1;
-testTodo2.completed = false;
-
-const defaultToDos = new ToDoList("Default");
-defaultToDos.add(testTodo1);
-handler.currentToDoList = defaultToDos.uuid;
-
-const workToDos = new ToDoList("Work");
-workToDos.add(testTodo2);
-
-handler.add(defaultToDos);
-handler.add(workToDos);
-
 handler.renderInitial();
