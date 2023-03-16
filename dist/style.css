@@ -21,6 +21,10 @@ body {
   height: var(--header-height);
 }
 
+.logo, .toDoListButton, #addNewToDoList, .toDoListSelector, .priorityIndicator, .deleteToDoButton, .modalButton {
+  user-select: none;
+}
+
 .logo {
   margin: 10px;
 }
