@@ -10,39 +10,31 @@ import {
   renderModalDeleteDialog,
 } from "./render";
 import "iconify-icon";
-import { add } from "date-fns";
+import { add, parse } from "date-fns";
 
 class ToDoHandler {
   constructor() {
-    this._toDoLists = {};
-    this._currentToDoList = null;
+    this.toDoLists = {};
+    this.currentToDoList = null;
 
-    this._contentDiv = document.createElement("div");
-    this._contentDiv.id = "content";
+    this.contentDiv = document.createElement("div");
+    this.contentDiv.id = "content";
 
-    this._toDoListDiv = document.createElement("div");
-    this._toDoListDiv.id = "ToDoListDiv";
+    this.toDoListDiv = document.createElement("div");
+    this.toDoListDiv.id = "ToDoListDiv";
 
-    this._selectorDiv = document.createElement("div");
-    this._selectorDiv.id = "selectorDiv";
+    this.selectorDiv = document.createElement("div");
+    this.selectorDiv.id = "selectorDiv";
 
-    this._sideBarDiv = sideBar();
-    this._sideBarDiv.appendChild(this._selectorDiv);
+    this.sideBarDiv = sideBar();
+    this.sideBarDiv.appendChild(this.selectorDiv);
 
-    this._contentDiv.appendChild(this._sideBarDiv);
-    this._contentDiv.appendChild(this._toDoListDiv);
-  }
-
-  get currentToDoList() {
-    return this._currentToDoList;
-  }
-
-  set currentToDoList(value) {
-    this._currentToDoList = value;
+    this.contentDiv.appendChild(this.sideBarDiv);
+    this.contentDiv.appendChild(this.toDoListDiv);
   }
 
   add(toDoList) {
-    this._toDoLists[toDoList.uuid] = toDoList;
+    this.toDoLists[toDoList.uuid] = toDoList;
   }
 
   toDoClickOpenClose(target) {
@@ -52,6 +44,7 @@ class ToDoHandler {
   amendField(target, toDoItem) {
     let amendedItem = renderAmendField(target);
     toDoItem[amendedItem.field] = amendedItem.newValue;
+    this.saveToLocalStorage();
   }
 
   clickToEdit(target, toDoItem) {
@@ -72,6 +65,8 @@ class ToDoHandler {
 
     toDoItem.priority = target.id;
     target.classList.add("activated");
+    
+    this.saveToLocalStorage();
   }
 
   setToDoEventHandlers(toDoDiv, todo) {
@@ -95,7 +90,7 @@ class ToDoHandler {
     newToDoItem.description = "Description";
     newToDoItem.dueDate = add(new Date(), { days: 1 });
     newToDoItem.priority = 0;
-    this._toDoLists[this._currentToDoList].add(newToDoItem);
+    this.toDoLists[this.currentToDoList].add(newToDoItem);
 
     const toDoDiv = renderToDoItem(
       newToDoItem.title,
@@ -116,7 +111,9 @@ class ToDoHandler {
 
     toDoDiv.appendChild(deleteToDoButton);
 
-    this._toDoListDiv.appendChild(toDoDiv);
+    this.toDoListDiv.appendChild(toDoDiv);
+    
+    this.saveToLocalStorage();
   }
 
   deleteToDoItem(target, targetToDoItem) {
@@ -127,7 +124,7 @@ class ToDoHandler {
 
     deleteButton.addEventListener("click", () => {
       const toDoDiv = target.closest(".toDoItem");
-      const toDoList = this._toDoLists[this._currentToDoList].list;
+      const toDoList = this.toDoLists[this.currentToDoList].list;
       const isTarget = (toDoItem) => toDoItem === targetToDoItem;
       const toDoItemIndex = toDoList.findIndex(isTarget);
 
@@ -137,24 +134,28 @@ class ToDoHandler {
     });
 
     cancelButton.addEventListener("click", () => modalDiv.remove());
+    
+    this.saveToLocalStorage();
   }
 
   switchToDoList(target) {
     const newToDoListuuid = target.getAttribute("uuid");
 
-    for (let element of Array.from(this._selectorDiv.children)) {
+    for (let element of Array.from(this.selectorDiv.children)) {
       element.classList.remove("selected");
     }
     target.classList.add("selected");
 
-    this._currentToDoList = newToDoListuuid;
+    this.currentToDoList = newToDoListuuid;
     this.clearToDoListDiv();
     this.renderToDoList();
+    
+    this.saveToLocalStorage();
   }
 
   addToDoList(target) {
     const newToDoList = new ToDoList("New List");
-    this._toDoLists[newToDoList.uuid] = newToDoList;
+    this.toDoLists[newToDoList.uuid] = newToDoList;
 
     const toDoListSelector = document.createElement("div");
     toDoListSelector.classList.add("toDoListSelector");
@@ -165,12 +166,14 @@ class ToDoHandler {
       this.switchToDoList(e.target)
     );
 
-    this._selectorDiv.appendChild(toDoListSelector);
+    this.selectorDiv.appendChild(toDoListSelector);
+    
+    this.saveToLocalStorage();
   }
 
   deleteToDoList(button) {
     const targetUUID = button.getAttribute("toDoListuuid");
-    const selector = Array.from(this._selectorDiv.children).filter((el) => {
+    const selector = Array.from(this.selectorDiv.children).filter((el) => {
       return el.getAttribute("uuid") === targetUUID;
     })[0];
     const previousSibling = selector.previousSibling;
@@ -182,7 +185,7 @@ class ToDoHandler {
     const modalDiv = modalButtons.modalDiv;
 
     deleteButton.addEventListener("click", () => {
-      delete this._toDoLists[this._currentToDoList];
+      delete this.toDoLists[this.currentToDoList];
       selector.remove();
       if (previousSibling) {
         previousSibling.click();
@@ -192,6 +195,8 @@ class ToDoHandler {
       modalDiv.remove();
     });
     cancelButton.addEventListener("click", () => modalDiv.remove());
+    
+    this.saveToLocalStorage();
   }
 
   renderSelectors() {
@@ -201,14 +206,14 @@ class ToDoHandler {
     addNewToDoListButton.addEventListener("click", (e) =>
       this.addToDoList(e.target)
     );
-    this._sideBarDiv.prepend(addNewToDoListButton);
+    this.sideBarDiv.prepend(addNewToDoListButton);
 
-    for (const [uuid, toDoList] of Object.entries(this._toDoLists)) {
+    for (const [uuid, toDoList] of Object.entries(this.toDoLists)) {
       const toDoListSelector = document.createElement("div");
       toDoListSelector.classList.add("toDoListSelector");
       toDoListSelector.textContent = toDoList.title;
       toDoListSelector.setAttribute("uuid", uuid);
-      if (uuid === this._currentToDoList) {
+      if (uuid === this.currentToDoList) {
         toDoListSelector.classList.add("selected");
       }
 
@@ -216,12 +221,12 @@ class ToDoHandler {
         this.switchToDoList(e.target)
       );
 
-      this._selectorDiv.appendChild(toDoListSelector);
+      this.selectorDiv.appendChild(toDoListSelector);
     }
   }
 
   clearToDoListDiv() {
-    this._toDoListDiv.textContent = "";
+    this.toDoListDiv.textContent = "";
   }
 
   createExampleToDos() {
@@ -233,7 +238,7 @@ class ToDoHandler {
     exampleTodo.priority = 0;
     exampleTodo.completed = false;
     exampleTodoList.add(exampleTodo);
-    this._currentToDoList = exampleTodoList.uuid;
+    this.currentToDoList = exampleTodoList.uuid;
     this.add(exampleTodoList);
 
     exampleTodoList = new ToDoList("Work");
@@ -247,10 +252,26 @@ class ToDoHandler {
     this.add(exampleTodoList);
   }
 
+  loadFromLocalStorage() {
+    this.toDoLists = JSON.parse(localStorage['toDoLists']);
+    for (const [key, value] of Object.entries(this.toDoLists)) {
+      for (const toDoItem of value.list) {
+        let dateString = toDoItem.dueDate.slice(0, -8);
+        toDoItem.dueDate = parse(dateString, "yyyy-MM-dd'T'HH:mm", new Date());
+      }
+    }
+    this.currentToDoList = localStorage['currentToDoList'];
+  }
+
+  saveToLocalStorage() {
+    localStorage['toDoLists'] = JSON.stringify(this.toDoLists);
+    localStorage['currentToDoList'] = this.currentToDoList;
+  }
+
   renderToDoList() {
-    console.log(Object.keys(this._toDoLists).length);
-    const numToDoLists = Object.keys(this._toDoLists).length;
-    const toDoList = this._toDoLists[this._currentToDoList];
+    const numToDoLists = Object.keys(this.toDoLists).length;
+    const toDoList = this.toDoLists[this.currentToDoList];
+    console.log(toDoList);
     const toDoListButtonsDiv = document.createElement("div");
     toDoListButtonsDiv.id = "toDoListButtonsDiv";
 
@@ -274,8 +295,7 @@ class ToDoHandler {
 
     addNewToDoItemButton.addEventListener("click", () => this.addToDoItem());
 
-    this._toDoListDiv.appendChild(toDoListButtonsDiv);
-
+    this.toDoListDiv.appendChild(toDoListButtonsDiv);
     for (const [uuid, todo] of toDoList.list.entries()) {
       const toDoDiv = renderToDoItem(
         todo.title,
@@ -298,17 +318,22 @@ class ToDoHandler {
 
       toDoDiv.appendChild(deleteToDoButton);
 
-      this._toDoListDiv.appendChild(toDoDiv);
+      this.toDoListDiv.appendChild(toDoDiv);
     }
   }
 
   renderInitial() {
-    this.createExampleToDos();
+    if (localStorage['toDoLists']) { 
+      this.loadFromLocalStorage();
+    } else {
+      this.createExampleToDos();
+    }
     this.renderSelectors();
     this.renderToDoList();
+    this.saveToLocalStorage();
 
     document.body.appendChild(header());
-    document.body.appendChild(this._contentDiv);
+    document.body.appendChild(this.contentDiv);
     document.body.appendChild(footer());
   }
 }
