@@ -176,14 +176,22 @@ class ToDoHandler {
     const previousSibling = selector.previousSibling;
     const nextSibling = selector.nextSibling;
 
-    selector.remove();
-    delete this._toDoLists[this._currentToDoList];
+    const modalButtons = renderModalDeleteDialog(document.body);
+    const deleteButton = modalButtons.deleteButton;
+    const cancelButton = modalButtons.cancelButton;
+    const modalDiv = modalButtons.modalDiv;
 
-    if (previousSibling) {
-      previousSibling.click();
-    } else {
-      nextSibling.click();
-    }
+    deleteButton.addEventListener("click", () => {
+      delete this._toDoLists[this._currentToDoList];
+      selector.remove();
+      if (previousSibling) {
+        previousSibling.click();
+      } else {
+        nextSibling.click();
+      }
+      modalDiv.remove();
+    });
+    cancelButton.addEventListener("click", () => modalDiv.remove());
   }
 
   renderSelectors() {
