@@ -91,7 +91,7 @@ class ToDoHandler {
     newToDoItem.description = "Description";
     newToDoItem.dueDate = add(new Date(), { days: 1 });
     newToDoItem.priority = 0;
-    this.toDoLists[this.currentToDoList].add(newToDoItem);
+    this.toDoLists[this.currentToDoList].list.push(newToDoItem);
 
     const toDoDiv = renderToDoItem(
       newToDoItem.title,
