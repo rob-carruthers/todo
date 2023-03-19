@@ -68,7 +68,6 @@ function renderAmendField(target) {
       fieldDiv.classList.remove("fieldError");
     }
     renderValue = "Due: " + format(newValue, "yyyy/MM/dd HH:mm");
-    
   } else {
     if (renderValue === "") {
       const cancelValue = noButtonDiv.getAttribute("cancelvalue");
@@ -94,12 +93,12 @@ function renderModalRenameDialog(parentDiv) {
 
   const modalBox = document.createElement("div");
   modalBox.id = "modalDeleteBox";
-  
+
   const modalText = document.createElement("div");
   modalText.id = "modalDeleteText";
   modalText.textContent = "Enter new name:";
 
-  const modalInput = document.createElement("input")
+  const modalInput = document.createElement("input");
   modalInput.id = "modalInput";
 
   const modalButtonsDiv = document.createElement("div");
@@ -123,7 +122,7 @@ function renderModalRenameDialog(parentDiv) {
   modalDiv.appendChild(modalBox);
   parentDiv.appendChild(modalDiv);
 
-  return({modalDiv, renameButton, cancelButton});
+  return { modalDiv, renameButton, cancelButton };
 }
 
 function renderModalDeleteDialog(parentDiv) {
@@ -133,7 +132,7 @@ function renderModalDeleteDialog(parentDiv) {
 
   const modalBox = document.createElement("div");
   modalBox.id = "modalDeleteBox";
-  
+
   const modalText = document.createElement("div");
   modalText.id = "modalDeleteText";
   modalText.textContent = "Really delete?";
@@ -158,7 +157,7 @@ function renderModalDeleteDialog(parentDiv) {
   modalDiv.appendChild(modalBox);
   parentDiv.appendChild(modalDiv);
 
-  return({modalDiv, deleteButton, cancelButton});
+  return { modalDiv, deleteButton, cancelButton };
 }
 
 function renderClickToEdit(target) {
@@ -176,7 +175,7 @@ function renderClickToEdit(target) {
       '<iconify-icon icon="mdi:close-thick" style="color: black;"></iconify-icon>';
 
     const prefill = target.textContent;
-    noButton.setAttribute('cancelValue', prefill);
+    noButton.setAttribute("cancelValue", prefill);
     target.innerHTML = "";
     target.style.display = "flex";
 
@@ -195,7 +194,9 @@ function renderClickToEdit(target) {
 
     noButton.addEventListener("click", (e) => {
       const targetDiv = e.target.closest(".editableField");
-      const cancelValue = e.target.closest("#noButton").getAttribute("cancelValue");
+      const cancelValue = e.target
+        .closest("#noButton")
+        .getAttribute("cancelValue");
       targetDiv.textContent = cancelValue;
       targetDiv.classList.remove("editing");
     });
@@ -206,6 +207,26 @@ function renderClickToEdit(target) {
 
     return yesButton;
   }
+}
+
+function renderToDoItemActionButtons() {
+  const actionButtonsDiv = document.createElement("div");
+  actionButtonsDiv.style.display = "none";
+
+  const archiveToDoButton = document.createElement("div");
+  archiveToDoButton.classList.add("toDoButton");
+  archiveToDoButton.classList.add("archiveToDoButton");
+  archiveToDoButton.textContent = "Archive";
+
+  const deleteToDoButton = document.createElement("div");
+  deleteToDoButton.textContent = "Delete";
+  deleteToDoButton.classList.add("toDoButton");
+  deleteToDoButton.classList.add("deleteToDoButton");
+
+  actionButtonsDiv.appendChild(archiveToDoButton);
+  actionButtonsDiv.appendChild(deleteToDoButton);
+
+  return actionButtonsDiv;
 }
 
 function renderToDoItem(title, description, dueDate, priority) {
@@ -267,5 +288,6 @@ export {
   renderClickOpenClose,
   renderAmendField,
   renderModalDeleteDialog,
-  renderModalRenameDialog
+  renderModalRenameDialog,
+  renderToDoItemActionButtons,
 };

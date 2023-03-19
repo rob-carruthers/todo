@@ -9,6 +9,7 @@ import {
   renderToDoItem,
   renderModalDeleteDialog,
   renderModalRenameDialog,
+  renderToDoItemActionButtons
 } from "./render";
 import "iconify-icon";
 import { add, parse } from "date-fns";
@@ -102,25 +103,12 @@ class ToDoHandler {
     );
     this.setToDoEventHandlers(toDoDiv, newToDoItem);
 
-    const actionButtonsDiv = document.createElement("div");
-    actionButtonsDiv.style.display = "none";
-
-    const archiveToDoButton = document.createElement("div");
-    archiveToDoButton.classList.add("toDoButton");
-    archiveToDoButton.classList.add("archiveToDoButton");
-    archiveToDoButton.textContent = "Archive";
-
-    const deleteToDoButton = document.createElement("div");
-    deleteToDoButton.textContent = "Delete";
-    deleteToDoButton.classList.add("toDoButton");
-    deleteToDoButton.classList.add("deleteToDoButton");
+    const actionButtonsDiv = renderToDoItemActionButtons();
+    const deleteToDoButton = actionButtonsDiv.querySelector(".deleteToDoButton");
 
     deleteToDoButton.addEventListener("click", (e) =>
       this.deleteToDoItemConfirm(e.target, newToDoItem)
     );
-    
-    actionButtonsDiv.appendChild(archiveToDoButton);
-    actionButtonsDiv.appendChild(deleteToDoButton);
     toDoDiv.appendChild(actionButtonsDiv);
 
     this.toDoListDiv.appendChild(toDoDiv);
@@ -385,25 +373,12 @@ class ToDoHandler {
 
       this.setToDoEventHandlers(toDoDiv, todo);
 
-      const actionButtonsDiv = document.createElement("div");
-      actionButtonsDiv.style.display = "none";
-
-      const archiveToDoButton = document.createElement("div");
-      archiveToDoButton.classList.add("toDoButton");
-      archiveToDoButton.classList.add("archiveToDoButton");
-      archiveToDoButton.textContent = "Archive";
-
-      const deleteToDoButton = document.createElement("div");
-      deleteToDoButton.textContent = "Delete";
-      deleteToDoButton.classList.add("toDoButton");
-      deleteToDoButton.classList.add("deleteToDoButton");
+      const actionButtonsDiv = renderToDoItemActionButtons();
+      const deleteToDoButton = actionButtonsDiv.querySelector(".deleteToDoButton");
 
       deleteToDoButton.addEventListener("click", (e) =>
         this.deleteToDoItemConfirm(e.target, todo)
       );
-      
-      actionButtonsDiv.appendChild(archiveToDoButton);
-      actionButtonsDiv.appendChild(deleteToDoButton);
       toDoDiv.appendChild(actionButtonsDiv);
 
       this.toDoListDiv.appendChild(toDoDiv);
