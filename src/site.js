@@ -17,6 +17,7 @@ class ToDoHandler {
   constructor() {
     this.toDoLists = {};
     this.currentToDoList = null;
+    this.archive = null;
 
     this.contentDiv = document.createElement("div");
     this.contentDiv.id = "content";
@@ -139,7 +140,7 @@ class ToDoHandler {
     this.saveToLocalStorage();
   }
 
-  switchToDoList(target) {
+  switchToDoList(target, isArchive = false) {
     const newToDoListuuid = target.getAttribute("uuid");
 
     for (let element of Array.from(this.selectorDiv.children)) {
@@ -147,9 +148,14 @@ class ToDoHandler {
     }
     target.classList.add("selected");
 
-    this.currentToDoList = newToDoListuuid;
     this.clearToDoListDiv();
-    this.renderToDoList();
+
+    if (isArchive) {
+      this.renderToDoList(true);
+    } else {
+      this.currentToDoList = newToDoListuuid;
+      this.renderToDoList();
+    }
 
     this.saveToLocalStorage();
   }
@@ -252,6 +258,18 @@ class ToDoHandler {
 
       this.selectorDiv.appendChild(toDoListSelector);
     }
+    const line = document.createElement("div");
+    line.innerHTML = "<hr/>";
+    this.selectorDiv.appendChild(line);
+
+    const archiveSelector = document.createElement("div");
+    archiveSelector.classList.add("toDoListSelector");
+    archiveSelector.textContent = "Archive";
+    archiveSelector.setAttribute("uuid", this.archive.uuid);
+    archiveSelector.addEventListener("click", (e) =>
+      this.switchToDoList(e.target, true)
+    );
+    this.selectorDiv.appendChild(archiveSelector);
   }
 
   clearToDoListDiv() {
@@ -279,6 +297,8 @@ class ToDoHandler {
     exampleTodo.completed = false;
     exampleTodoList.add(exampleTodo);
     this.add(exampleTodoList);
+
+    this.archive = new ToDoList("Archive");
   }
 
   loadFromLocalStorage() {
@@ -290,50 +310,59 @@ class ToDoHandler {
       }
     }
     this.currentToDoList = localStorage["currentToDoList"];
+    this.archive = JSON.parse(localStorage["archive"]);
   }
 
   saveToLocalStorage() {
     localStorage["toDoLists"] = JSON.stringify(this.toDoLists);
     localStorage["currentToDoList"] = this.currentToDoList;
+    localStorage["archive"] = JSON.stringify(this.archive);
   }
 
-  renderToDoList() {
+  renderToDoList(isArchive = false) {
     const numToDoLists = Object.keys(this.toDoLists).length;
-    const toDoList = this.toDoLists[this.currentToDoList];
-    const toDoListButtonsDiv = document.createElement("div");
-    toDoListButtonsDiv.id = "toDoListButtonsDiv";
+    let toDoList = undefined;
+    if (isArchive) {
+      toDoList = this.archive;
+    } else {
+      toDoList = this.toDoLists[this.currentToDoList];
+    
+      const toDoListButtonsDiv = document.createElement("div");
+      toDoListButtonsDiv.id = "toDoListButtonsDiv";
 
-    const addNewToDoItemButton = document.createElement("div");
-    addNewToDoItemButton.classList.add("toDoListButton");
-    addNewToDoItemButton.id = "addNewToDoItem";
-    addNewToDoItemButton.textContent = "New todo";
-    toDoListButtonsDiv.appendChild(addNewToDoItemButton);
+      const addNewToDoItemButton = document.createElement("div");
+      addNewToDoItemButton.classList.add("toDoListButton");
+      addNewToDoItemButton.id = "addNewToDoItem";
+      addNewToDoItemButton.textContent = "New todo";
+      toDoListButtonsDiv.appendChild(addNewToDoItemButton);
 
-    if (numToDoLists > 1) {
-      const deleteToDoListButton = document.createElement("div");
-      deleteToDoListButton.classList.add("toDoListButton");
-      deleteToDoListButton.id = "deleteToDoList";
-      deleteToDoListButton.setAttribute("toDoListuuid", toDoList.uuid);
-      deleteToDoListButton.textContent = "Delete List";
-      deleteToDoListButton.addEventListener("click", (e) =>
-        this.deleteToDoList(e.target)
+      if (numToDoLists > 1) {
+        const deleteToDoListButton = document.createElement("div");
+        deleteToDoListButton.classList.add("toDoListButton");
+        deleteToDoListButton.id = "deleteToDoList";
+        deleteToDoListButton.setAttribute("toDoListuuid", toDoList.uuid);
+        deleteToDoListButton.textContent = "Delete List";
+        deleteToDoListButton.addEventListener("click", (e) =>
+          this.deleteToDoList(e.target)
+        );
+        toDoListButtonsDiv.appendChild(deleteToDoListButton);
+      }
+
+      const renameToDoListButton = document.createElement("div");
+      renameToDoListButton.classList.add("toDoListButton");
+      renameToDoListButton.id = "renameToDoList";
+      renameToDoListButton.setAttribute("toDoListuuid", toDoList.uuid);
+      renameToDoListButton.textContent = "Rename todo list";
+      toDoListButtonsDiv.appendChild(renameToDoListButton);
+
+      addNewToDoItemButton.addEventListener("click", () => this.addToDoItem());
+      renameToDoListButton.addEventListener("click", (e) =>
+        this.renameToDoList(e.target)
       );
-      toDoListButtonsDiv.appendChild(deleteToDoListButton);
+
+      this.toDoListDiv.appendChild(toDoListButtonsDiv);
     }
 
-    const renameToDoListButton = document.createElement("div");
-    renameToDoListButton.classList.add("toDoListButton");
-    renameToDoListButton.id = "renameToDoList";
-    renameToDoListButton.setAttribute("toDoListuuid", toDoList.uuid);
-    renameToDoListButton.textContent = "Rename todo list";
-    toDoListButtonsDiv.appendChild(renameToDoListButton);
-
-    addNewToDoItemButton.addEventListener("click", () => this.addToDoItem());
-    renameToDoListButton.addEventListener("click", (e) =>
-      this.renameToDoList(e.target)
-    );
-
-    this.toDoListDiv.appendChild(toDoListButtonsDiv);
     for (const [uuid, todo] of toDoList.list.entries()) {
       const toDoDiv = renderToDoItem(
         todo.title,
