@@ -183,7 +183,7 @@ class ToDoHandler {
       this.switchToDoList(e.target)
     );
 
-    this.selectorDiv.appendChild(toDoListSelector);
+    this.selectorDiv.insertBefore(toDoListSelector, document.getElementById("selectorhr"));
 
     this.saveToLocalStorage();
   }
@@ -269,6 +269,7 @@ class ToDoHandler {
       this.selectorDiv.appendChild(toDoListSelector);
     }
     const line = document.createElement("div");
+    line.id = "selectorhr";
     line.innerHTML = "<hr/>";
     this.selectorDiv.appendChild(line);
 
