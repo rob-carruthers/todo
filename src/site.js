@@ -9,7 +9,7 @@ import {
   renderToDoItem,
   renderModalDeleteDialog,
   renderModalRenameDialog,
-  renderToDoItemActionButtons
+  renderToDoItemActionButtons,
 } from "./render";
 import "iconify-icon";
 import { add, parse } from "date-fns";
@@ -93,7 +93,7 @@ class ToDoHandler {
     newToDoItem.description = "Description";
     newToDoItem.dueDate = add(new Date(), { days: 1 });
     newToDoItem.priority = 0;
-    this.toDoLists[this.currentToDoList].list.push(newToDoItem);
+    this.toDoLists[this.currentToDoList].list[newToDoItem.uuid] = newToDoItem;
 
     const toDoDiv = renderToDoItem(
       newToDoItem.title,
@@ -104,7 +104,8 @@ class ToDoHandler {
     this.setToDoEventHandlers(toDoDiv, newToDoItem);
 
     const actionButtonsDiv = renderToDoItemActionButtons();
-    const deleteToDoButton = actionButtonsDiv.querySelector(".deleteToDoButton");
+    const deleteToDoButton =
+      actionButtonsDiv.querySelector(".deleteToDoButton");
 
     deleteToDoButton.addEventListener("click", (e) =>
       this.deleteToDoItemConfirm(e.target, newToDoItem)
@@ -125,11 +126,9 @@ class ToDoHandler {
     deleteButton.addEventListener("click", () => {
       const toDoDiv = target.closest(".toDoItem");
       const toDoList = this.toDoLists[this.currentToDoList].list;
-      const isTarget = (toDoItem) => toDoItem === targetToDoItem;
-      const toDoItemIndex = toDoList.findIndex(isTarget);
 
       toDoDiv.remove();
-      toDoList.splice(toDoItemIndex, 1);
+      delete toDoList[targetToDoItem.uuid];
       modalDiv.remove();
     });
 
@@ -171,7 +170,10 @@ class ToDoHandler {
       this.switchToDoList(e.target)
     );
 
-    this.selectorDiv.insertBefore(toDoListSelector, document.getElementById("selectorhr"));
+    this.selectorDiv.insertBefore(
+      toDoListSelector,
+      document.getElementById("selectorhr")
+    );
 
     this.saveToLocalStorage();
   }
@@ -302,8 +304,8 @@ class ToDoHandler {
 
   loadFromLocalStorage() {
     this.toDoLists = JSON.parse(localStorage["toDoLists"]);
-    for (const [key, value] of Object.entries(this.toDoLists)) {
-      for (const toDoItem of value.list) {
+    for (const [uuid, toDoList] of Object.entries(this.toDoLists)) {
+      for (const [uuid, toDoItem] of Object.entries(toDoList.list)) {
         let dateString = toDoItem.dueDate.slice(0, -8);
         toDoItem.dueDate = parse(dateString, "yyyy-MM-dd'T'HH:mm", new Date());
       }
@@ -325,7 +327,7 @@ class ToDoHandler {
       toDoList = this.archive;
     } else {
       toDoList = this.toDoLists[this.currentToDoList];
-    
+
       const toDoListButtonsDiv = document.createElement("div");
       toDoListButtonsDiv.id = "toDoListButtonsDiv";
 
@@ -362,7 +364,7 @@ class ToDoHandler {
       this.toDoListDiv.appendChild(toDoListButtonsDiv);
     }
 
-    for (const [uuid, todo] of toDoList.list.entries()) {
+    for (const [uuid, todo] of Object.entries(toDoList.list)) {
       const toDoDiv = renderToDoItem(
         todo.title,
         todo.description,
@@ -374,7 +376,8 @@ class ToDoHandler {
       this.setToDoEventHandlers(toDoDiv, todo);
 
       const actionButtonsDiv = renderToDoItemActionButtons();
-      const deleteToDoButton = actionButtonsDiv.querySelector(".deleteToDoButton");
+      const deleteToDoButton =
+        actionButtonsDiv.querySelector(".deleteToDoButton");
 
       deleteToDoButton.addEventListener("click", (e) =>
         this.deleteToDoItemConfirm(e.target, todo)
@@ -386,6 +389,7 @@ class ToDoHandler {
   }
 
   renderInitial() {
+    //localStorage.removeItem("toDoLists");
     if (localStorage["toDoLists"]) {
       this.loadFromLocalStorage();
     } else {

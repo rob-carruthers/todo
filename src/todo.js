@@ -3,16 +3,16 @@ import {v4 as uuidv4} from "uuid";
 class ToDoList {
   constructor(title) {
     this.title = title;
-    this.list = [];
+    this.list = {};
     this.uuid = uuidv4();
   }
 
   add(todo) {
-    this.list.push(todo);
+    this.list[todo.uuid] = todo;
   }
 
-  remove(index) {
-    this.list.splice(index, 1);
+  remove(uuid) {
+    delete this.list[uuid];
   }
 }
 
