@@ -8,7 +8,7 @@ import {
   renderAmendField,
   renderToDoItem,
   renderModalDeleteDialog,
-  renderModalRenameDialog
+  renderModalRenameDialog,
 } from "./render";
 import "iconify-icon";
 import { add, parse } from "date-fns";
@@ -215,12 +215,17 @@ class ToDoHandler {
     renameButton.addEventListener("click", (e) => {
       const newTitle = e.target.parentElement.previousSibling.value;
 
-      selector.textContent = newTitle;
-      this.toDoLists[this.currentToDoList].title = newTitle;
-      modalDiv.remove();
+      if (newTitle === "") {
+        e.target.parentElement.previousSibling.value =
+          "Please enter a valid name.";
+      } else {
+        selector.textContent = newTitle;
+        this.toDoLists[this.currentToDoList].title = newTitle;
+        modalDiv.remove();
+      }
 
       this.saveToLocalStorage();
-    });    
+    });
   }
 
   renderSelectors() {
