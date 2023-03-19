@@ -116,7 +116,7 @@ class ToDoHandler {
     deleteToDoButton.classList.add("deleteToDoButton");
 
     deleteToDoButton.addEventListener("click", (e) =>
-      this.deleteToDoItemConfirm(e.target, todo)
+      this.deleteToDoItemConfirm(e.target, newToDoItem)
     );
     
     actionButtonsDiv.appendChild(archiveToDoButton);
