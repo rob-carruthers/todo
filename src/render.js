@@ -120,7 +120,7 @@ function renderModalRenameDialog(parentDiv) {
 
   const cancelButton = document.createElement("div");
   cancelButton.classList.add("modalButton");
-  cancelButton.id = "modalDeleteCancel";
+  cancelButton.id = "modalRenameCancel";
   cancelButton.textContent = "Cancel";
 
   modalBox.appendChild(modalInput);
@@ -155,6 +155,32 @@ function renderModalDeleteDialog(parentDiv) {
   parentDiv.appendChild(modalDiv);
 
   return { modalDiv, deleteButton, cancelButton };
+}
+
+function renderModalArchiveDialog(parentDiv) {
+  const modalDiv = renderModalBox("Really archive?");
+  const modalBox = modalDiv.querySelector("#modalBox");
+
+  const modalButtonsDiv = document.createElement("div");
+  modalButtonsDiv.id = "modalButtonsDiv";
+
+  const archiveButton = document.createElement("div");
+  archiveButton.classList.add("modalButton");
+  archiveButton.classList.add("archiveToDoButton");
+  archiveButton.id = "modalArchiveConfirm";
+  archiveButton.textContent = "Archive";
+
+  const cancelButton = document.createElement("div");
+  cancelButton.classList.add("modalButton");
+  cancelButton.id = "modalArchiveCancel";
+  cancelButton.textContent = "Cancel";
+
+  modalButtonsDiv.appendChild(archiveButton);
+  modalButtonsDiv.appendChild(cancelButton);
+  modalBox.appendChild(modalButtonsDiv);
+  parentDiv.appendChild(modalDiv);
+
+  return { modalDiv, archiveButton, cancelButton };
 }
 
 function renderClickToEdit(target) {
@@ -286,5 +312,6 @@ export {
   renderAmendField,
   renderModalDeleteDialog,
   renderModalRenameDialog,
+  renderModalArchiveDialog,
   renderToDoItemActionButtons,
 };
