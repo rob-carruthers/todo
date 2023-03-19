@@ -201,3 +201,14 @@ body {
 #modalDeleteConfirm {
   background-color: rgb(212, 94, 94);
 }
+
+.fieldError::after {
+  color: brown;
+  font-weight: bold;
+  content: "Input invalid - please retry";
+  border: 1px solid gray;
+  background-color: rgb(246, 218, 218);
+  margin-left: 10px;
+  padding-left: 2px;
+  padding-right: 2px;
+}

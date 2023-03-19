@@ -1,4 +1,4 @@
-import { format, parse } from "date-fns";
+import { format, parse, isValid } from "date-fns";
 
 function header() {
   const headerDiv = document.createElement("div");
@@ -51,16 +51,34 @@ function renderClickOpenClose(target) {
 
 function renderAmendField(target) {
   let newValue = undefined;
-  const buttonDiv = target.closest("div");
-  const field = buttonDiv.id.slice(3);
-  const fieldDiv = buttonDiv.closest("#" + field);
+  const yesButtonDiv = target.closest("div");
+  const noButtonDiv = yesButtonDiv.nextSibling;
+  const field = yesButtonDiv.id.slice(3);
+  const fieldDiv = yesButtonDiv.closest("#" + field);
   let renderValue = fieldDiv.children[0].children[0].value;
 
   if (field === "dueDate") {
+    const cancelValue = noButtonDiv.getAttribute("cancelvalue").slice(5);
     newValue = parse(renderValue, "yyyy-MM-dd'T'HH:mm", new Date());
+    // Check to see if the entered date is valid
+    if (!isValid(newValue)) {
+      newValue = parse(cancelValue, "yyyy/MM/dd HH:mm", new Date());
+      fieldDiv.classList.add("fieldError");
+    } else {
+      fieldDiv.classList.remove("fieldError");
+    }
     renderValue = "Due: " + format(newValue, "yyyy/MM/dd HH:mm");
+    
   } else {
-    newValue = renderValue;
+    if (renderValue === "") {
+      const cancelValue = noButtonDiv.getAttribute("cancelvalue");
+      newValue = cancelValue;
+      renderValue = cancelValue;
+      fieldDiv.classList.add("fieldError");
+    } else {
+      newValue = renderValue;
+      fieldDiv.classList.remove("fieldError");
+    }
   }
   fieldDiv.innerHTML = "";
   fieldDiv.textContent = renderValue;
@@ -179,7 +197,6 @@ function renderClickToEdit(target) {
       const targetDiv = e.target.closest(".editableField");
       const cancelValue = e.target.closest("#noButton").getAttribute("cancelValue");
       targetDiv.textContent = cancelValue;
-      console.log(targetDiv);
       targetDiv.classList.remove("editing");
     });
 
