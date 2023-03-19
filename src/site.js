@@ -160,7 +160,7 @@ class ToDoHandler {
     this.saveToLocalStorage();
   }
 
-  addToDoList(target) {
+  addToDoList() {
     const newToDoList = new ToDoList("New List");
     this.toDoLists[newToDoList.uuid] = newToDoList;
 
@@ -374,16 +374,26 @@ class ToDoHandler {
 
       this.setToDoEventHandlers(toDoDiv, todo);
 
+      const actionButtonsDiv = document.createElement("div");
+      actionButtonsDiv.style.display = "none";
+
+      const archiveToDoButton = document.createElement("div");
+      archiveToDoButton.classList.add("toDoButton");
+      archiveToDoButton.classList.add("archiveToDoButton");
+      archiveToDoButton.textContent = "Archive";
+
       const deleteToDoButton = document.createElement("div");
       deleteToDoButton.textContent = "Delete";
-      deleteToDoButton.style.display = "none";
+      deleteToDoButton.classList.add("toDoButton");
       deleteToDoButton.classList.add("deleteToDoButton");
 
       deleteToDoButton.addEventListener("click", (e) =>
         this.deleteToDoItem(e.target, todo)
       );
-
-      toDoDiv.appendChild(deleteToDoButton);
+      
+      actionButtonsDiv.appendChild(archiveToDoButton);
+      actionButtonsDiv.appendChild(deleteToDoButton);
+      toDoDiv.appendChild(actionButtonsDiv);
 
       this.toDoListDiv.appendChild(toDoDiv);
     }

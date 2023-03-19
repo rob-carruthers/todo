@@ -21,7 +21,7 @@ body {
   height: var(--header-height);
 }
 
-.logo, .toDoListButton, #addNewToDoList, .toDoListSelector, .priorityIndicator, .deleteToDoButton, .modalButton {
+.logo, .toDoListButton, #addNewToDoList, .toDoListSelector, .priorityIndicator, .toDoButton, .modalButton {
   user-select: none;
 }
 
@@ -109,12 +109,20 @@ body {
   max-width: fit-content;
 }
 
-.deleteToDoButton {
+.toDoButton {
   border: 1px solid black;
   border-radius: 5px;
   padding: 5px;
   margin-top: 10px;
+  margin-right: 5px;
+}
+
+.deleteToDoButton {
   background-color: rgb(212, 94, 94);
+}
+
+.archiveToDoButton {
+  background-color: rgb(134, 255, 134);
 }
 
 #sideBar {
