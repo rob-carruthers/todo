@@ -106,7 +106,7 @@ function renderModalRenameDialog(parentDiv) {
 
   const renameButton = document.createElement("div");
   renameButton.classList.add("modalButton");
-  renameButton.id = "modalRenameConfirm";
+  renameButton.id = "renameToDoList";
   renameButton.textContent = "Rename";
 
   const cancelButton = document.createElement("div");
