@@ -8,6 +8,7 @@ body {
   padding: 0;
   height: 100vh;
   letter-spacing: 0.05em;
+  font-family: 'Source Sans Pro';
 }
 
 #header {
