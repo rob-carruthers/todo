@@ -86,17 +86,26 @@ function renderAmendField(target) {
   return { field: field, newValue: newValue };
 }
 
-function renderModalRenameDialog(parentDiv) {
+function renderModalBox(prompt) {
   const modalDiv = document.createElement("div");
-  modalDiv.id = "modalDeleteDialog";
-  modalDiv.setAttribute("delete", "false");
+  modalDiv.id = "modalDialog";
 
   const modalBox = document.createElement("div");
-  modalBox.id = "modalDeleteBox";
+  modalBox.id = "modalBox";
 
   const modalText = document.createElement("div");
-  modalText.id = "modalDeleteText";
-  modalText.textContent = "Enter new name:";
+  modalText.id = "modalText";
+  modalText.textContent = prompt;
+
+  modalBox.appendChild(modalText);
+  modalDiv.appendChild(modalBox);
+
+  return modalDiv;
+}
+
+function renderModalRenameDialog(parentDiv) {
+  const modalDiv = renderModalBox("Enter new name:");
+  const modalBox = modalDiv.querySelector("#modalBox");
 
   const modalInput = document.createElement("input");
   modalInput.id = "modalInput";
@@ -114,28 +123,18 @@ function renderModalRenameDialog(parentDiv) {
   cancelButton.id = "modalDeleteCancel";
   cancelButton.textContent = "Cancel";
 
-  modalBox.appendChild(modalText);
   modalBox.appendChild(modalInput);
   modalButtonsDiv.appendChild(renameButton);
   modalButtonsDiv.appendChild(cancelButton);
   modalBox.appendChild(modalButtonsDiv);
-  modalDiv.appendChild(modalBox);
   parentDiv.appendChild(modalDiv);
 
   return { modalDiv, renameButton, cancelButton };
 }
 
 function renderModalDeleteDialog(parentDiv) {
-  const modalDiv = document.createElement("div");
-  modalDiv.id = "modalDeleteDialog";
-  modalDiv.setAttribute("delete", "false");
-
-  const modalBox = document.createElement("div");
-  modalBox.id = "modalDeleteBox";
-
-  const modalText = document.createElement("div");
-  modalText.id = "modalDeleteText";
-  modalText.textContent = "Really delete?";
+  const modalDiv = renderModalBox("Really delete?");
+  const modalBox = modalDiv.querySelector("#modalBox");
 
   const modalButtonsDiv = document.createElement("div");
   modalButtonsDiv.id = "modalButtonsDiv";
@@ -150,11 +149,9 @@ function renderModalDeleteDialog(parentDiv) {
   cancelButton.id = "modalDeleteCancel";
   cancelButton.textContent = "Cancel";
 
-  modalBox.appendChild(modalText);
   modalButtonsDiv.appendChild(deleteButton);
   modalButtonsDiv.appendChild(cancelButton);
   modalBox.appendChild(modalButtonsDiv);
-  modalDiv.appendChild(modalBox);
   parentDiv.appendChild(modalDiv);
 
   return { modalDiv, deleteButton, cancelButton };
