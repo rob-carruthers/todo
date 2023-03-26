@@ -144,6 +144,8 @@ body {
 }
 
 .toDoListSelector {
+  display: flex;
+  justify-content: space-between;
   padding: 10px;
   font-size: 1.2rem;
   border: 1px solid transparent;
@@ -155,6 +157,16 @@ body {
   background-color: aquamarine;
   border-color: black;
   border-radius: 5px;
+}
+
+.toDoListSelectorCount {
+  border: 2px solid gray;
+  background-color: black;
+  color: lightgray;
+  border-radius: 50%;
+  width: 1rem;
+  font-size: 0.95rem;
+  text-align: center;
 }
 
 #priority {

@@ -121,6 +121,7 @@ class ToDoHandler {
     this.toDoListDiv.appendChild(toDoDiv);
 
     this.saveToLocalStorage();
+    this.updateSelectorCounts();
   }
 
   deleteToDoItemConfirm(target, targetToDoItem) {
@@ -136,6 +137,7 @@ class ToDoHandler {
       toDoDiv.remove();
       delete toDoList[targetToDoItem.uuid];
       modalDiv.remove();
+      this.updateSelectorCounts();
     });
 
     cancelButton.addEventListener("click", () => modalDiv.remove());
@@ -158,20 +160,23 @@ class ToDoHandler {
       this.archive.list[targetToDoItem.uuid] = targetToDoItem;
       delete toDoList[targetToDoItem.uuid];
       modalDiv.remove();
+      this.updateSelectorCounts();
     });
 
     cancelButton.addEventListener("click", () => modalDiv.remove());
 
     this.saveToLocalStorage();
+    this.updateSelectorCounts();
   }
 
   switchToDoList(target, isArchive = false) {
-    const newToDoListuuid = target.getAttribute("uuid");
+    const selector = target.closest(".toDoListSelector");
+    const newToDoListuuid = selector.getAttribute("uuid");
 
     for (let element of Array.from(this.selectorDiv.children)) {
       element.classList.remove("selected");
     }
-    target.classList.add("selected");
+    selector.classList.add("selected");
 
     this.clearToDoListDiv();
 
@@ -191,7 +196,16 @@ class ToDoHandler {
 
     const toDoListSelector = document.createElement("div");
     toDoListSelector.classList.add("toDoListSelector");
-    toDoListSelector.textContent = newToDoList.title;
+
+    const selectorTitle = document.createElement("div");
+    selectorTitle.textContent = newToDoList.title;
+    selectorTitle.classList.add("toDoListSelectorTitle");
+
+    const selectorCount = document.createElement("div");
+    selectorCount.classList.add("toDoListSelectorCount");
+
+    toDoListSelector.appendChild(selectorTitle);
+    toDoListSelector.appendChild(selectorCount);
     toDoListSelector.setAttribute("uuid", newToDoList.uuid);
 
     toDoListSelector.addEventListener("click", (e) =>
@@ -204,6 +218,7 @@ class ToDoHandler {
     );
 
     this.saveToLocalStorage();
+    this.updateSelectorCounts();
   }
 
   deleteToDoList(button) {
@@ -232,6 +247,7 @@ class ToDoHandler {
     cancelButton.addEventListener("click", () => modalDiv.remove());
 
     this.saveToLocalStorage();
+    this.updateSelectorCounts();
   }
 
   renameToDoList(button) {
@@ -262,6 +278,17 @@ class ToDoHandler {
     });
   }
 
+  updateSelectorCounts() {
+    for (const selector of Array.from(this.selectorDiv.children)) {
+      if ( selector.id === "" ) {
+        const uuid = selector.getAttribute("uuid");
+        const count = Object.entries(this.toDoLists[uuid].list).length;
+        const countDiv = Array.from(selector.children)[1];
+        countDiv.textContent = count;
+      }
+    }
+  }
+
   renderSelectors() {
     const addNewToDoListButton = document.createElement("div");
     addNewToDoListButton.id = "addNewToDoList";
@@ -274,7 +301,17 @@ class ToDoHandler {
     for (const [uuid, toDoList] of Object.entries(this.toDoLists)) {
       const toDoListSelector = document.createElement("div");
       toDoListSelector.classList.add("toDoListSelector");
-      toDoListSelector.textContent = toDoList.title;
+
+      const selectorTitle = document.createElement("div");
+      selectorTitle.textContent = toDoList.title;
+      selectorTitle.classList.add("toDoListSelectorTitle");
+
+      const selectorCount = document.createElement("div");
+      selectorCount.classList.add("toDoListSelectorCount");
+
+      toDoListSelector.appendChild(selectorTitle);
+      toDoListSelector.appendChild(selectorCount);
+
       toDoListSelector.setAttribute("uuid", uuid);
       if (uuid === this.currentToDoList) {
         toDoListSelector.classList.add("selected");
@@ -285,6 +322,7 @@ class ToDoHandler {
       );
 
       this.selectorDiv.appendChild(toDoListSelector);
+      this.updateSelectorCounts();
     }
     const line = document.createElement("div");
     line.id = "selectorhr";
@@ -293,6 +331,7 @@ class ToDoHandler {
 
     const archiveSelector = document.createElement("div");
     archiveSelector.classList.add("toDoListSelector");
+    archiveSelector.id = "Archive";
     archiveSelector.textContent = "Archive";
     archiveSelector.setAttribute("uuid", this.archive.uuid);
     archiveSelector.addEventListener("click", (e) =>
